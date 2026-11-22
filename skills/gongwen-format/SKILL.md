@@ -37,7 +37,7 @@ license: PolyForm-Noncommercial-1.0.0
 | 用户要什么 | 用哪个脚本 |
 |---|---|
 | 把正文排成正式 Word、套红头、出信函、纪要或简报（OA 归档/送签） | `scripts/build_docx.py`，随后自动检查 |
-| 日常通知/急件预览、打印存 PDF、一键复制，或无 `python-docx` | `scripts/build_html.py`（单文件 HTML，白头/红头/材料/便签可切） |
+| 日常通知/急件预览、打印存 PDF、一键复制，或无 `python-docx` | `scripts/build_html.py`（单文件 HTML，白头/红头/便签可切，打印带页码） |
 | 看看这个 docx 格式对不对 | `scripts/check_docx.py` |
 | 这个 docx 格式乱了，帮我改 | 先 `check_docx.py` 判路线（第四步）：轻度问题 `fix_docx.py`，结构问题 `extract_docx.py` 抽取后 `build_docx.py` 重排 |
 | 用户说“内容别动”“一个字都别改”“只调格式” | build、fix 都加 `--keep-text`（第四步第 5 款） |

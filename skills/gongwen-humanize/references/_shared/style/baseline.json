@@ -69,7 +69,7 @@
         "DEF-017": {"docs_with_hit": 15, "doc_share": 0.385, "per_1000_pooled": 0.539, "per_1000_p90": 1.615, "per_1000_max": 3.876, "threshold": 3.0, "docs_over_threshold": 2, "over_threshold_share": 0.051},
         "DEF-018": {"docs_with_hit": 4, "doc_share": 0.103, "per_1000_pooled": 0.075, "per_1000_p90": 0.122, "per_1000_max": 1.449, "threshold": 2.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "DEF-019": {"docs_with_hit": 26, "doc_share": 0.667, "per_1000_pooled": 0.704, "per_1000_p90": 2.857, "per_1000_max": 5.65, "threshold": 3.0, "docs_over_threshold": 2, "over_threshold_share": 0.051},
-        "DEF-028": {"docs_with_hit": 5, "doc_share": 0.128, "per_1000_pooled": 0.135, "per_1000_p90": 0.323, "per_1000_max": 3.94, "threshold": 3.0, "docs_over_threshold": 1, "over_threshold_share": 0.026},
+        "DEF-028": {"docs_with_hit": 12, "doc_share": 0.308, "per_1000_pooled": 0.794, "per_1000_p90": 1.723, "per_1000_max": 4.805, "threshold": 3.0, "docs_over_threshold": 2, "over_threshold_share": 0.051},
         "DEF-029": {"docs_with_hit": 4, "doc_share": 0.103, "per_1000_pooled": 0.06, "per_1000_p90": 0.069, "per_1000_max": 0.702, "threshold": 1.0, "docs_over_threshold": 0, "over_threshold_share": 0.0}
       }
     },
@@ -131,7 +131,6 @@
       "style_patterns": {
         "AI-013": {"docs_with_hit": 15, "doc_share": 0.395, "per_1000_pooled": 1.484, "per_1000_p90": 5.5, "per_1000_max": 9.709, "threshold": 4.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "AI-026": {"docs_with_hit": 1, "doc_share": 0.026, "per_1000_pooled": 0.099, "per_1000_p90": 0.0, "per_1000_max": 2.907, "threshold": 2.5, "docs_over_threshold": 0, "over_threshold_share": 0.0},
-        "AI-027": {"docs_with_hit": 1, "doc_share": 0.026, "per_1000_pooled": 0.198, "per_1000_p90": 0.0, "per_1000_max": 22.727, "threshold": 4.0, "docs_over_threshold": 1, "over_threshold_share": 0.026},
         "AI-051": {"docs_with_hit": 24, "doc_share": 0.632, "per_1000_pooled": 21.662, "per_1000_p90": 58.035, "per_1000_max": 83.951, "threshold": 45.0, "docs_over_threshold": 6, "over_threshold_share": 0.158},
         "DEF-017": {"docs_with_hit": 1, "doc_share": 0.026, "per_1000_pooled": 0.396, "per_1000_p90": 0.0, "per_1000_max": 5.141, "threshold": 3.0, "docs_over_threshold": 1, "over_threshold_share": 0.026},
         "DEF-018": {"docs_with_hit": 1, "doc_share": 0.026, "per_1000_pooled": 0.099, "per_1000_p90": 0.0, "per_1000_max": 0.859, "threshold": 2.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
@@ -197,8 +196,8 @@
       "style_patterns": {
         "AI-013": {"docs_with_hit": 23, "doc_share": 0.605, "per_1000_pooled": 0.232, "per_1000_p90": 0.579, "per_1000_max": 1.267, "threshold": 4.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "AI-025": {"docs_with_hit": 1, "doc_share": 0.026, "per_1000_pooled": 0.008, "per_1000_p90": 0.0, "per_1000_max": 0.225},
-        "AI-026": {"docs_with_hit": 32, "doc_share": 0.842, "per_1000_pooled": 1.229, "per_1000_p90": 2.416, "per_1000_max": 3.928, "threshold": 2.5, "docs_over_threshold": 3, "over_threshold_share": 0.079},
-        "AI-027": {"docs_with_hit": 17, "doc_share": 0.447, "per_1000_pooled": 0.208, "per_1000_p90": 0.584, "per_1000_max": 0.681, "threshold": 4.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
+        "AI-026": {"docs_with_hit": 31, "doc_share": 0.816, "per_1000_pooled": 1.19, "per_1000_p90": 2.415, "per_1000_max": 3.93, "threshold": 2.5, "docs_over_threshold": 3, "over_threshold_share": 0.079},
+        "AI-027": {"docs_with_hit": 16, "doc_share": 0.421, "per_1000_pooled": 0.176, "per_1000_p90": 0.471, "per_1000_max": 0.681, "threshold": 4.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "AI-029": {"docs_with_hit": 1, "doc_share": 0.026, "per_1000_pooled": 0.008, "per_1000_p90": 0.0, "per_1000_max": 0.2, "threshold": 2.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "AI-030": {"docs_with_hit": 3, "doc_share": 0.079, "per_1000_pooled": 0.024, "per_1000_p90": 0.0, "per_1000_max": 0.376, "threshold": 5.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "AI-044": {"docs_with_hit": 1, "doc_share": 0.026, "per_1000_pooled": 0.008, "per_1000_p90": 0.0, "per_1000_max": 0.34},
@@ -207,7 +206,7 @@
         "DEF-017": {"docs_with_hit": 19, "doc_share": 0.5, "per_1000_pooled": 0.279, "per_1000_p90": 0.71, "per_1000_max": 2.111, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "DEF-018": {"docs_with_hit": 7, "doc_share": 0.184, "per_1000_pooled": 0.088, "per_1000_p90": 0.446, "per_1000_max": 1.391, "threshold": 2.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "DEF-019": {"docs_with_hit": 22, "doc_share": 0.579, "per_1000_pooled": 0.607, "per_1000_p90": 1.419, "per_1000_max": 3.622, "threshold": 3.0, "docs_over_threshold": 1, "over_threshold_share": 0.026},
-        "DEF-028": {"docs_with_hit": 4, "doc_share": 0.105, "per_1000_pooled": 0.048, "per_1000_p90": 0.079, "per_1000_max": 0.959, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
+        "DEF-028": {"docs_with_hit": 8, "doc_share": 0.211, "per_1000_pooled": 0.192, "per_1000_p90": 0.534, "per_1000_max": 3.46, "threshold": 3.0, "docs_over_threshold": 1, "over_threshold_share": 0.026},
         "DEF-029": {"docs_with_hit": 8, "doc_share": 0.211, "per_1000_pooled": 0.072, "per_1000_p90": 0.338, "per_1000_max": 0.604, "threshold": 1.0, "docs_over_threshold": 0, "over_threshold_share": 0.0}
       }
     },
@@ -268,13 +267,13 @@
       },
       "style_patterns": {
         "AI-010": {"docs_with_hit": 3, "doc_share": 0.075, "per_1000_pooled": 0.022, "per_1000_p90": 0.0, "per_1000_max": 0.314, "threshold": 1.5, "docs_over_threshold": 0, "over_threshold_share": 0.0},
-        "AI-026": {"docs_with_hit": 26, "doc_share": 0.65, "per_1000_pooled": 1.046, "per_1000_p90": 2.074, "per_1000_max": 3.003, "threshold": 2.5, "docs_over_threshold": 3, "over_threshold_share": 0.075},
-        "AI-027": {"docs_with_hit": 14, "doc_share": 0.35, "per_1000_pooled": 0.182, "per_1000_p90": 0.476, "per_1000_max": 0.621, "threshold": 4.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
+        "AI-026": {"docs_with_hit": 26, "doc_share": 0.65, "per_1000_pooled": 1.021, "per_1000_p90": 2.065, "per_1000_max": 3.003, "threshold": 2.5, "docs_over_threshold": 2, "over_threshold_share": 0.05},
+        "AI-027": {"docs_with_hit": 13, "doc_share": 0.325, "per_1000_pooled": 0.124, "per_1000_p90": 0.271, "per_1000_max": 0.388, "threshold": 4.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "AI-030": {"docs_with_hit": 6, "doc_share": 0.15, "per_1000_pooled": 0.069, "per_1000_p90": 0.24, "per_1000_max": 0.395, "threshold": 5.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "DEF-017": {"docs_with_hit": 17, "doc_share": 0.425, "per_1000_pooled": 0.193, "per_1000_p90": 0.504, "per_1000_max": 0.877, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "DEF-018": {"docs_with_hit": 8, "doc_share": 0.2, "per_1000_pooled": 0.087, "per_1000_p90": 0.33, "per_1000_max": 0.913, "threshold": 2.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "DEF-019": {"docs_with_hit": 24, "doc_share": 0.6, "per_1000_pooled": 0.354, "per_1000_p90": 0.819, "per_1000_max": 1.259, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
-        "DEF-028": {"docs_with_hit": 3, "doc_share": 0.075, "per_1000_pooled": 0.055, "per_1000_p90": 0.0, "per_1000_max": 0.57, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
+        "DEF-028": {"docs_with_hit": 12, "doc_share": 0.3, "per_1000_pooled": 0.193, "per_1000_p90": 0.443, "per_1000_max": 2.705, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "DEF-029": {"docs_with_hit": 8, "doc_share": 0.2, "per_1000_pooled": 0.073, "per_1000_p90": 0.225, "per_1000_max": 0.536, "threshold": 1.0, "docs_over_threshold": 0, "over_threshold_share": 0.0}
       }
     },
@@ -330,13 +329,13 @@
       },
       "style_patterns": {
         "AI-013": {"docs_with_hit": 20, "doc_share": 0.909, "per_1000_pooled": 1.397, "per_1000_p90": 3.233, "per_1000_max": 5.935, "threshold": 4.0, "docs_over_threshold": 1, "over_threshold_share": 0.045},
-        "AI-026": {"docs_with_hit": 3, "doc_share": 0.136, "per_1000_pooled": 0.291, "per_1000_p90": 1.11, "per_1000_max": 1.477, "threshold": 2.5, "docs_over_threshold": 0, "over_threshold_share": 0.0},
-        "AI-027": {"docs_with_hit": 1, "doc_share": 0.045, "per_1000_pooled": 0.116, "per_1000_p90": 0.0, "per_1000_max": 2.466, "threshold": 4.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
+        "AI-026": {"docs_with_hit": 2, "doc_share": 0.091, "per_1000_pooled": 0.233, "per_1000_p90": 0.0, "per_1000_max": 1.234, "threshold": 2.5, "docs_over_threshold": 0, "over_threshold_share": 0.0},
+        "AI-027": {"docs_with_hit": 1, "doc_share": 0.045, "per_1000_pooled": 0.058, "per_1000_p90": 0.0, "per_1000_max": 1.233, "threshold": 4.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "AI-051": {"docs_with_hit": 22, "doc_share": 1.0, "per_1000_pooled": 18.101, "per_1000_p90": 30.246, "per_1000_max": 34.42, "threshold": 45.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "DEF-017": {"docs_with_hit": 3, "doc_share": 0.136, "per_1000_pooled": 0.233, "per_1000_p90": 1.818, "per_1000_max": 2.967, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "DEF-018": {"docs_with_hit": 1, "doc_share": 0.045, "per_1000_pooled": 0.058, "per_1000_p90": 0.0, "per_1000_max": 1.095, "threshold": 2.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "DEF-019": {"docs_with_hit": 5, "doc_share": 0.227, "per_1000_pooled": 0.291, "per_1000_p90": 1.151, "per_1000_max": 1.701, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
-        "DEF-028": {"docs_with_hit": 2, "doc_share": 0.091, "per_1000_pooled": 0.233, "per_1000_p90": 0.0, "per_1000_max": 2.191, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0}
+        "DEF-028": {"docs_with_hit": 2, "doc_share": 0.091, "per_1000_pooled": 0.466, "per_1000_p90": 0.0, "per_1000_max": 5.476, "threshold": 6.0, "docs_over_threshold": 0, "over_threshold_share": 0.0}
       }
     },
     "函": {
@@ -404,7 +403,7 @@
         "AI-051": {"docs_with_hit": 26, "doc_share": 0.812, "per_1000_pooled": 16.38, "per_1000_p90": 29.27, "per_1000_max": 55.394, "threshold": 45.0, "docs_over_threshold": 2, "over_threshold_share": 0.062},
         "DEF-017": {"docs_with_hit": 4, "doc_share": 0.125, "per_1000_pooled": 0.249, "per_1000_p90": 1.312, "per_1000_max": 3.817, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "DEF-019": {"docs_with_hit": 7, "doc_share": 0.219, "per_1000_pooled": 0.685, "per_1000_p90": 2.685, "per_1000_max": 7.075, "threshold": 3.0, "docs_over_threshold": 2, "over_threshold_share": 0.062},
-        "DEF-028": {"docs_with_hit": 2, "doc_share": 0.062, "per_1000_pooled": 0.125, "per_1000_p90": 0.0, "per_1000_max": 2.695, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0}
+        "DEF-028": {"docs_with_hit": 2, "doc_share": 0.062, "per_1000_pooled": 0.187, "per_1000_p90": 0.0, "per_1000_max": 4.246, "threshold": 6.0, "docs_over_threshold": 0, "over_threshold_share": 0.0}
       }
     },
     "通报": {
@@ -472,7 +471,7 @@
         "AI-051": {"docs_with_hit": 28, "doc_share": 1.0, "per_1000_pooled": 21.133, "per_1000_p90": 39.318, "per_1000_max": 61.533, "threshold": 45.0, "docs_over_threshold": 2, "over_threshold_share": 0.071},
         "DEF-017": {"docs_with_hit": 8, "doc_share": 0.286, "per_1000_pooled": 0.179, "per_1000_p90": 2.845, "per_1000_max": 5.54, "threshold": 3.0, "docs_over_threshold": 3, "over_threshold_share": 0.107},
         "DEF-019": {"docs_with_hit": 16, "doc_share": 0.571, "per_1000_pooled": 0.503, "per_1000_p90": 2.527, "per_1000_max": 3.165, "threshold": 3.0, "docs_over_threshold": 1, "over_threshold_share": 0.036},
-        "DEF-028": {"docs_with_hit": 1, "doc_share": 0.036, "per_1000_pooled": 0.016, "per_1000_p90": 0.0, "per_1000_max": 0.445, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0}
+        "DEF-028": {"docs_with_hit": 1, "doc_share": 0.036, "per_1000_pooled": 0.016, "per_1000_p90": 0.0, "per_1000_max": 0.675, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0}
       }
     },
     "报告": {
@@ -532,8 +531,8 @@
       "style_patterns": {
         "AI-010": {"docs_with_hit": 1, "doc_share": 0.083, "per_1000_pooled": 0.005, "per_1000_p90": 0.0, "per_1000_max": 0.201, "threshold": 1.5, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "AI-013": {"docs_with_hit": 7, "doc_share": 0.583, "per_1000_pooled": 0.254, "per_1000_p90": 0.343, "per_1000_max": 0.851, "threshold": 4.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
-        "AI-026": {"docs_with_hit": 11, "doc_share": 0.917, "per_1000_pooled": 0.468, "per_1000_p90": 0.904, "per_1000_max": 1.003, "threshold": 2.5, "docs_over_threshold": 0, "over_threshold_share": 0.0},
-        "AI-027": {"docs_with_hit": 11, "doc_share": 0.917, "per_1000_pooled": 0.4, "per_1000_p90": 0.976, "per_1000_max": 1.057, "threshold": 4.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
+        "AI-026": {"docs_with_hit": 10, "doc_share": 0.833, "per_1000_pooled": 0.458, "per_1000_p90": 0.903, "per_1000_max": 1.002, "threshold": 2.5, "docs_over_threshold": 0, "over_threshold_share": 0.0},
+        "AI-027": {"docs_with_hit": 11, "doc_share": 0.917, "per_1000_pooled": 0.37, "per_1000_p90": 0.97, "per_1000_max": 1.057, "threshold": 4.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "AI-030": {"docs_with_hit": 8, "doc_share": 0.667, "per_1000_pooled": 0.249, "per_1000_p90": 0.332, "per_1000_max": 0.893, "threshold": 5.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "AI-044": {"docs_with_hit": 1, "doc_share": 0.083, "per_1000_pooled": 0.01, "per_1000_p90": 0.0, "per_1000_max": 0.131},
         "AI-045": {"docs_with_hit": 1, "doc_share": 0.083, "per_1000_pooled": 0.01, "per_1000_p90": 0.0, "per_1000_max": 0.054, "threshold": 2.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
@@ -542,7 +541,7 @@
         "DEF-018": {"docs_with_hit": 5, "doc_share": 0.417, "per_1000_pooled": 0.073, "per_1000_p90": 0.15, "per_1000_max": 0.215, "threshold": 2.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "DEF-019": {"docs_with_hit": 12, "doc_share": 1.0, "per_1000_pooled": 1.034, "per_1000_p90": 1.288, "per_1000_max": 1.414, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "DEF-020": {"docs_with_hit": 1, "doc_share": 0.083, "per_1000_pooled": 0.005, "per_1000_p90": 0.0, "per_1000_max": 0.027},
-        "DEF-028": {"docs_with_hit": 6, "doc_share": 0.5, "per_1000_pooled": 0.063, "per_1000_p90": 0.118, "per_1000_max": 0.138, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0}
+        "DEF-028": {"docs_with_hit": 5, "doc_share": 0.417, "per_1000_pooled": 0.058, "per_1000_p90": 0.118, "per_1000_max": 0.138, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0}
       }
     },
     "政府工作报告": {
@@ -600,8 +599,8 @@
         "AI-010": {"docs_with_hit": 2, "doc_share": 0.105, "per_1000_pooled": 0.006, "per_1000_p90": 0.011, "per_1000_max": 0.102, "threshold": 1.5, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "AI-013": {"docs_with_hit": 19, "doc_share": 1.0, "per_1000_pooled": 0.409, "per_1000_p90": 0.855, "per_1000_max": 2.441, "threshold": 4.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "AI-025": {"docs_with_hit": 4, "doc_share": 0.211, "per_1000_pooled": 0.012, "per_1000_p90": 0.062, "per_1000_max": 0.102},
-        "AI-026": {"docs_with_hit": 19, "doc_share": 1.0, "per_1000_pooled": 1.558, "per_1000_p90": 2.25, "per_1000_max": 2.354, "threshold": 2.5, "docs_over_threshold": 0, "over_threshold_share": 0.0},
-        "AI-027": {"docs_with_hit": 19, "doc_share": 1.0, "per_1000_pooled": 0.302, "per_1000_p90": 0.448, "per_1000_max": 0.557, "threshold": 4.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
+        "AI-026": {"docs_with_hit": 19, "doc_share": 1.0, "per_1000_pooled": 1.522, "per_1000_p90": 2.135, "per_1000_max": 2.354, "threshold": 2.5, "docs_over_threshold": 0, "over_threshold_share": 0.0},
+        "AI-027": {"docs_with_hit": 19, "doc_share": 1.0, "per_1000_pooled": 0.275, "per_1000_p90": 0.433, "per_1000_max": 0.512, "threshold": 4.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "AI-030": {"docs_with_hit": 16, "doc_share": 0.842, "per_1000_pooled": 0.107, "per_1000_p90": 0.236, "per_1000_max": 0.265, "threshold": 5.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "AI-044": {"docs_with_hit": 2, "doc_share": 0.105, "per_1000_pooled": 0.009, "per_1000_p90": 0.012, "per_1000_max": 0.11},
         "AI-045": {"docs_with_hit": 4, "doc_share": 0.211, "per_1000_pooled": 0.012, "per_1000_p90": 0.056, "per_1000_max": 0.062, "threshold": 2.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
@@ -611,7 +610,7 @@
         "DEF-018": {"docs_with_hit": 3, "doc_share": 0.158, "per_1000_pooled": 0.009, "per_1000_p90": 0.046, "per_1000_max": 0.066, "threshold": 2.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "DEF-019": {"docs_with_hit": 19, "doc_share": 1.0, "per_1000_pooled": 0.363, "per_1000_p90": 0.636, "per_1000_max": 0.947, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "DEF-022": {"docs_with_hit": 1, "doc_share": 0.053, "per_1000_pooled": 0.003, "per_1000_p90": 0.0, "per_1000_max": 0.055},
-        "DEF-028": {"docs_with_hit": 14, "doc_share": 0.737, "per_1000_pooled": 0.183, "per_1000_p90": 0.42, "per_1000_max": 0.943, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0}
+        "DEF-028": {"docs_with_hit": 11, "doc_share": 0.579, "per_1000_pooled": 0.149, "per_1000_p90": 0.41, "per_1000_max": 0.666, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0}
       }
     },
     "政府工作报告/市": {
@@ -667,8 +666,8 @@
         "AI-010": {"docs_with_hit": 1, "doc_share": 0.111, "per_1000_pooled": 0.006, "per_1000_p90": 0.011, "per_1000_max": 0.055, "threshold": 1.5, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "AI-013": {"docs_with_hit": 9, "doc_share": 1.0, "per_1000_pooled": 0.592, "per_1000_p90": 1.278, "per_1000_max": 2.441, "threshold": 4.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "AI-025": {"docs_with_hit": 1, "doc_share": 0.111, "per_1000_pooled": 0.006, "per_1000_p90": 0.012, "per_1000_max": 0.061},
-        "AI-026": {"docs_with_hit": 9, "doc_share": 1.0, "per_1000_pooled": 1.533, "per_1000_p90": 1.864, "per_1000_max": 1.886, "threshold": 2.5, "docs_over_threshold": 0, "over_threshold_share": 0.0},
-        "AI-027": {"docs_with_hit": 9, "doc_share": 1.0, "per_1000_pooled": 0.33, "per_1000_p90": 0.457, "per_1000_max": 0.557, "threshold": 4.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
+        "AI-026": {"docs_with_hit": 9, "doc_share": 1.0, "per_1000_pooled": 1.508, "per_1000_p90": 1.868, "per_1000_max": 1.886, "threshold": 2.5, "docs_over_threshold": 0, "over_threshold_share": 0.0},
+        "AI-027": {"docs_with_hit": 9, "doc_share": 1.0, "per_1000_pooled": 0.287, "per_1000_p90": 0.433, "per_1000_max": 0.433, "threshold": 4.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "AI-030": {"docs_with_hit": 8, "doc_share": 0.889, "per_1000_pooled": 0.1, "per_1000_p90": 0.196, "per_1000_max": 0.244, "threshold": 5.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "AI-044": {"docs_with_hit": 1, "doc_share": 0.111, "per_1000_pooled": 0.012, "per_1000_p90": 0.022, "per_1000_max": 0.11},
         "AI-045": {"docs_with_hit": 4, "doc_share": 0.444, "per_1000_pooled": 0.025, "per_1000_p90": 0.059, "per_1000_max": 0.062, "threshold": 2.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
@@ -677,7 +676,7 @@
         "DEF-018": {"docs_with_hit": 1, "doc_share": 0.111, "per_1000_pooled": 0.006, "per_1000_p90": 0.012, "per_1000_max": 0.061, "threshold": 2.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "DEF-019": {"docs_with_hit": 9, "doc_share": 1.0, "per_1000_pooled": 0.368, "per_1000_p90": 0.68, "per_1000_max": 0.947, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "DEF-022": {"docs_with_hit": 1, "doc_share": 0.111, "per_1000_pooled": 0.006, "per_1000_p90": 0.011, "per_1000_max": 0.055},
-        "DEF-028": {"docs_with_hit": 6, "doc_share": 0.667, "per_1000_pooled": 0.156, "per_1000_p90": 0.385, "per_1000_max": 0.943, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0}
+        "DEF-028": {"docs_with_hit": 4, "doc_share": 0.444, "per_1000_pooled": 0.106, "per_1000_p90": 0.28, "per_1000_max": 0.666, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0}
       }
     },
     "政府工作报告/省": {
@@ -734,8 +733,8 @@
         "AI-010": {"docs_with_hit": 1, "doc_share": 0.143, "per_1000_pooled": 0.008, "per_1000_p90": 0.041, "per_1000_max": 0.102, "threshold": 1.5, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "AI-013": {"docs_with_hit": 7, "doc_share": 1.0, "per_1000_pooled": 0.145, "per_1000_p90": 0.31, "per_1000_max": 0.512, "threshold": 4.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "AI-025": {"docs_with_hit": 3, "doc_share": 0.429, "per_1000_pooled": 0.024, "per_1000_p90": 0.081, "per_1000_max": 0.102},
-        "AI-026": {"docs_with_hit": 7, "doc_share": 1.0, "per_1000_pooled": 1.656, "per_1000_p90": 2.342, "per_1000_max": 2.354, "threshold": 2.5, "docs_over_threshold": 0, "over_threshold_share": 0.0},
-        "AI-027": {"docs_with_hit": 7, "doc_share": 1.0, "per_1000_pooled": 0.283, "per_1000_p90": 0.454, "per_1000_max": 0.512, "threshold": 4.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
+        "AI-026": {"docs_with_hit": 7, "doc_share": 1.0, "per_1000_pooled": 1.609, "per_1000_p90": 2.342, "per_1000_max": 2.354, "threshold": 2.5, "docs_over_threshold": 0, "over_threshold_share": 0.0},
+        "AI-027": {"docs_with_hit": 7, "doc_share": 1.0, "per_1000_pooled": 0.275, "per_1000_p90": 0.454, "per_1000_max": 0.512, "threshold": 4.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "AI-030": {"docs_with_hit": 5, "doc_share": 0.714, "per_1000_pooled": 0.121, "per_1000_p90": 0.246, "per_1000_max": 0.265, "threshold": 5.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "AI-044": {"docs_with_hit": 1, "doc_share": 0.143, "per_1000_pooled": 0.008, "per_1000_p90": 0.023, "per_1000_max": 0.058},
         "AI-047": {"docs_with_hit": 1, "doc_share": 0.143, "per_1000_pooled": 0.008, "per_1000_p90": 0.019, "per_1000_max": 0.048},
@@ -743,7 +742,7 @@
         "DEF-017": {"docs_with_hit": 1, "doc_share": 0.143, "per_1000_pooled": 0.008, "per_1000_p90": 0.021, "per_1000_max": 0.052, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "DEF-018": {"docs_with_hit": 2, "doc_share": 0.286, "per_1000_pooled": 0.016, "per_1000_p90": 0.052, "per_1000_max": 0.066, "threshold": 2.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "DEF-019": {"docs_with_hit": 7, "doc_share": 1.0, "per_1000_pooled": 0.315, "per_1000_p90": 0.529, "per_1000_max": 0.727, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
-        "DEF-028": {"docs_with_hit": 6, "doc_share": 0.857, "per_1000_pooled": 0.234, "per_1000_p90": 0.432, "per_1000_max": 0.468, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0}
+        "DEF-028": {"docs_with_hit": 6, "doc_share": 0.857, "per_1000_pooled": 0.21, "per_1000_p90": 0.411, "per_1000_max": 0.416, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0}
       }
     },
     "讲话": {
@@ -803,14 +802,14 @@
         "AI-013": {"docs_with_hit": 10, "doc_share": 0.5, "per_1000_pooled": 0.11, "per_1000_p90": 0.242, "per_1000_max": 1.127, "threshold": 4.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "AI-022": {"docs_with_hit": 1, "doc_share": 0.05, "per_1000_pooled": 0.006, "per_1000_p90": 0.0, "per_1000_max": 0.251},
         "AI-025": {"docs_with_hit": 1, "doc_share": 0.05, "per_1000_pooled": 0.006, "per_1000_p90": 0.0, "per_1000_max": 0.071},
-        "AI-026": {"docs_with_hit": 17, "doc_share": 0.85, "per_1000_pooled": 0.577, "per_1000_p90": 1.548, "per_1000_max": 2.007, "threshold": 2.5, "docs_over_threshold": 0, "over_threshold_share": 0.0},
-        "AI-027": {"docs_with_hit": 14, "doc_share": 0.7, "per_1000_pooled": 0.265, "per_1000_p90": 0.348, "per_1000_max": 0.432, "threshold": 4.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
+        "AI-026": {"docs_with_hit": 17, "doc_share": 0.85, "per_1000_pooled": 0.564, "per_1000_p90": 1.542, "per_1000_max": 1.756, "threshold": 2.5, "docs_over_threshold": 0, "over_threshold_share": 0.0},
+        "AI-027": {"docs_with_hit": 14, "doc_share": 0.7, "per_1000_pooled": 0.248, "per_1000_p90": 0.341, "per_1000_max": 0.424, "threshold": 4.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "AI-030": {"docs_with_hit": 10, "doc_share": 0.5, "per_1000_pooled": 0.173, "per_1000_p90": 0.371, "per_1000_max": 0.51, "threshold": 5.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "AI-032": {"docs_with_hit": 1, "doc_share": 0.05, "per_1000_pooled": 0.006, "per_1000_p90": 0.0, "per_1000_max": 0.101},
         "AI-051": {"docs_with_hit": 20, "doc_share": 1.0, "per_1000_pooled": 22.15, "per_1000_p90": 25.94, "per_1000_max": 29.379, "threshold": 45.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "DEF-017": {"docs_with_hit": 7, "doc_share": 0.35, "per_1000_pooled": 0.058, "per_1000_p90": 0.103, "per_1000_max": 0.17, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "DEF-019": {"docs_with_hit": 19, "doc_share": 0.95, "per_1000_pooled": 0.651, "per_1000_p90": 1.11, "per_1000_max": 1.54, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
-        "DEF-028": {"docs_with_hit": 15, "doc_share": 0.75, "per_1000_pooled": 0.617, "per_1000_p90": 1.266, "per_1000_max": 1.357, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0}
+        "DEF-028": {"docs_with_hit": 15, "doc_share": 0.75, "per_1000_pooled": 0.616, "per_1000_p90": 1.257, "per_1000_max": 1.35, "threshold": 4.5, "docs_over_threshold": 0, "over_threshold_share": 0.0}
       }
     },
     "讲话/国家领导人": {
@@ -866,14 +865,14 @@
       "style_patterns": {
         "AI-013": {"docs_with_hit": 3, "doc_share": 0.375, "per_1000_pooled": 0.149, "per_1000_p90": 0.486, "per_1000_max": 1.127, "threshold": 4.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "AI-022": {"docs_with_hit": 1, "doc_share": 0.125, "per_1000_pooled": 0.037, "per_1000_p90": 0.075, "per_1000_max": 0.251},
-        "AI-026": {"docs_with_hit": 6, "doc_share": 0.75, "per_1000_pooled": 0.895, "per_1000_p90": 1.738, "per_1000_max": 2.007, "threshold": 2.5, "docs_over_threshold": 0, "over_threshold_share": 0.0},
-        "AI-027": {"docs_with_hit": 3, "doc_share": 0.375, "per_1000_pooled": 0.186, "per_1000_p90": 0.267, "per_1000_max": 0.304, "threshold": 4.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
+        "AI-026": {"docs_with_hit": 6, "doc_share": 0.75, "per_1000_pooled": 0.814, "per_1000_p90": 1.621, "per_1000_max": 1.756, "threshold": 2.5, "docs_over_threshold": 0, "over_threshold_share": 0.0},
+        "AI-027": {"docs_with_hit": 3, "doc_share": 0.375, "per_1000_pooled": 0.148, "per_1000_p90": 0.222, "per_1000_max": 0.251, "threshold": 4.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "AI-030": {"docs_with_hit": 2, "doc_share": 0.25, "per_1000_pooled": 0.075, "per_1000_p90": 0.224, "per_1000_max": 0.51, "threshold": 5.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "AI-032": {"docs_with_hit": 1, "doc_share": 0.125, "per_1000_pooled": 0.037, "per_1000_p90": 0.03, "per_1000_max": 0.101},
         "AI-051": {"docs_with_hit": 8, "doc_share": 1.0, "per_1000_pooled": 21.917, "per_1000_p90": 24.901, "per_1000_max": 25.84, "threshold": 45.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "DEF-017": {"docs_with_hit": 1, "doc_share": 0.125, "per_1000_pooled": 0.037, "per_1000_p90": 0.03, "per_1000_max": 0.101, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "DEF-019": {"docs_with_hit": 7, "doc_share": 0.875, "per_1000_pooled": 0.596, "per_1000_p90": 1.219, "per_1000_max": 1.54, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
-        "DEF-028": {"docs_with_hit": 4, "doc_share": 0.5, "per_1000_pooled": 0.559, "per_1000_p90": 0.865, "per_1000_max": 0.911, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0}
+        "DEF-028": {"docs_with_hit": 4, "doc_share": 0.5, "per_1000_pooled": 0.666, "per_1000_p90": 0.952, "per_1000_max": 1.211, "threshold": 4.5, "docs_over_threshold": 0, "over_threshold_share": 0.0}
       }
     },
     "讲话/部委工作会议": {
@@ -930,12 +929,12 @@
         "AI-013": {"docs_with_hit": 7, "doc_share": 0.583, "per_1000_pooled": 0.102, "per_1000_p90": 0.232, "per_1000_max": 0.283, "threshold": 4.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "AI-025": {"docs_with_hit": 1, "doc_share": 0.083, "per_1000_pooled": 0.007, "per_1000_p90": 0.0, "per_1000_max": 0.071},
         "AI-026": {"docs_with_hit": 11, "doc_share": 0.917, "per_1000_pooled": 0.518, "per_1000_p90": 0.889, "per_1000_max": 0.92, "threshold": 2.5, "docs_over_threshold": 0, "over_threshold_share": 0.0},
-        "AI-027": {"docs_with_hit": 11, "doc_share": 0.917, "per_1000_pooled": 0.28, "per_1000_p90": 0.416, "per_1000_max": 0.432, "threshold": 4.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
+        "AI-027": {"docs_with_hit": 11, "doc_share": 0.917, "per_1000_pooled": 0.266, "per_1000_p90": 0.368, "per_1000_max": 0.424, "threshold": 4.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "AI-030": {"docs_with_hit": 8, "doc_share": 0.667, "per_1000_pooled": 0.191, "per_1000_p90": 0.37, "per_1000_max": 0.378, "threshold": 5.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "AI-051": {"docs_with_hit": 12, "doc_share": 1.0, "per_1000_pooled": 22.192, "per_1000_p90": 26.547, "per_1000_max": 29.379, "threshold": 45.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "DEF-017": {"docs_with_hit": 6, "doc_share": 0.5, "per_1000_pooled": 0.061, "per_1000_p90": 0.115, "per_1000_max": 0.17, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "DEF-019": {"docs_with_hit": 12, "doc_share": 1.0, "per_1000_pooled": 0.662, "per_1000_p90": 0.925, "per_1000_max": 1.357, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
-        "DEF-028": {"docs_with_hit": 11, "doc_share": 0.917, "per_1000_pooled": 0.627, "per_1000_p90": 1.322, "per_1000_max": 1.357, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0}
+        "DEF-028": {"docs_with_hit": 11, "doc_share": 0.917, "per_1000_pooled": 0.607, "per_1000_p90": 1.271, "per_1000_max": 1.35, "threshold": 4.5, "docs_over_threshold": 0, "over_threshold_share": 0.0}
       }
     },
     "工作总结": {
@@ -995,7 +994,7 @@
         "AI-051": {"docs_with_hit": 12, "doc_share": 1.0, "per_1000_pooled": 20.096, "per_1000_p90": 25.163, "per_1000_max": 26.518, "threshold": 45.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "DEF-017": {"docs_with_hit": 4, "doc_share": 0.333, "per_1000_pooled": 0.27, "per_1000_p90": 0.846, "per_1000_max": 0.998, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
         "DEF-019": {"docs_with_hit": 7, "doc_share": 0.583, "per_1000_pooled": 0.972, "per_1000_p90": 2.415, "per_1000_max": 2.807, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
-        "DEF-028": {"docs_with_hit": 1, "doc_share": 0.083, "per_1000_pooled": 0.054, "per_1000_p90": 0.0, "per_1000_max": 1.515, "threshold": 3.0, "docs_over_threshold": 0, "over_threshold_share": 0.0}
+        "DEF-028": {"docs_with_hit": 1, "doc_share": 0.083, "per_1000_pooled": 0.054, "per_1000_p90": 0.0, "per_1000_max": 1.524, "threshold": 2.0, "docs_over_threshold": 0, "over_threshold_share": 0.0}
       }
     }
   },
@@ -1005,8 +1004,8 @@
     "AI-022": {"group": "style", "category": "拟人化喻体", "level": "P2", "docs_applicable": 300, "docs_with_hit": 1, "doc_share": 0.003, "per_1000_pooled": 0.001},
     "AI-023": {"group": "style", "category": "概括代替数据", "level": "P2", "docs_applicable": 94, "docs_with_hit": 4, "doc_share": 0.043, "per_1000_pooled": 0.035},
     "AI-025": {"group": "style", "category": "新八股词", "level": "P1", "docs_applicable": 300, "docs_with_hit": 6, "doc_share": 0.02, "per_1000_pooled": 0.005},
-    "AI-026": {"group": "style", "category": "新八股词", "level": "P2", "docs_applicable": 300, "docs_with_hit": 144, "doc_share": 0.48, "per_1000_pooled": 0.951, "threshold": 2.5, "docs_over_threshold": 9, "over_threshold_share": 0.03},
-    "AI-027": {"group": "style", "category": "机关套话堆砌", "level": "P2", "docs_applicable": 300, "docs_with_hit": 92, "doc_share": 0.307, "per_1000_pooled": 0.252, "threshold": 4.0, "docs_over_threshold": 1, "over_threshold_share": 0.003},
+    "AI-026": {"group": "style", "category": "新八股词", "level": "P2", "docs_applicable": 300, "docs_with_hit": 140, "doc_share": 0.467, "per_1000_pooled": 0.927, "threshold": 2.5, "docs_over_threshold": 8, "over_threshold_share": 0.027},
+    "AI-027": {"group": "style", "category": "机关套话堆砌", "level": "P2", "docs_applicable": 300, "docs_with_hit": 88, "doc_share": 0.293, "per_1000_pooled": 0.22, "threshold": 4.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
     "AI-029": {"group": "style", "category": "新八股词", "level": "P2", "docs_applicable": 249, "docs_with_hit": 1, "doc_share": 0.004, "per_1000_pooled": 0.002, "threshold": 2.0, "docs_over_threshold": 0, "over_threshold_share": 0.0},
     "AI-030": {"group": "style", "category": "新八股词", "level": "P2", "docs_applicable": 300, "docs_with_hit": 49, "doc_share": 0.163, "per_1000_pooled": 0.12, "threshold": 5.0, "docs_over_threshold": 1, "over_threshold_share": 0.003},
     "AI-032": {"group": "style", "category": "宏大开头", "level": "P2", "docs_applicable": 300, "docs_with_hit": 1, "doc_share": 0.003, "per_1000_pooled": 0.001},
@@ -1019,7 +1018,7 @@
     "DEF-019": {"group": "defensive", "category": "模糊指代", "level": "P2", "docs_applicable": 300, "docs_with_hit": 164, "doc_share": 0.547, "per_1000_pooled": 0.569, "threshold": 3.0, "docs_over_threshold": 7, "over_threshold_share": 0.023},
     "DEF-020": {"group": "defensive", "category": "确定性措辞", "level": "P2", "docs_applicable": 280, "docs_with_hit": 1, "doc_share": 0.004, "per_1000_pooled": 0.001},
     "DEF-022": {"group": "defensive", "category": "确定性措辞", "level": "P2", "docs_applicable": 280, "docs_with_hit": 1, "doc_share": 0.004, "per_1000_pooled": 0.001},
-    "DEF-028": {"group": "defensive", "category": "确定性措辞", "level": "P2", "docs_applicable": 300, "docs_with_hit": 53, "doc_share": 0.177, "per_1000_pooled": 0.168, "threshold": 3.0, "docs_over_threshold": 1, "over_threshold_share": 0.003},
+    "DEF-028": {"group": "defensive", "category": "确定性措辞", "level": "P2", "docs_applicable": 300, "docs_with_hit": 69, "doc_share": 0.23, "per_1000_pooled": 0.24, "threshold": 3.0, "docs_over_threshold": 3, "over_threshold_share": 0.01},
     "DEF-029": {"group": "defensive", "category": "模糊时间", "level": "P2", "docs_applicable": 155, "docs_with_hit": 21, "doc_share": 0.135, "per_1000_pooled": 0.071, "threshold": 1.0, "docs_over_threshold": 0, "over_threshold_share": 0.0}
   },
   "style_patterns_zero_hit": ["AI-001", "AI-002", "AI-003", "AI-004", "AI-005", "AI-006", "AI-007", "AI-008", "AI-009", "AI-011", "AI-012", "AI-014", "AI-015", "AI-016", "AI-017", "AI-018", "AI-019", "AI-020", "AI-021", "AI-024", "AI-028", "AI-031", "AI-033", "AI-034", "AI-035", "AI-036", "AI-037", "AI-038", "AI-039", "AI-040", "AI-041", "AI-042", "AI-043", "AI-046", "AI-048", "AI-049", "AI-050", "AI-052", "AI-053", "DEF-001", "DEF-002", "DEF-003", "DEF-004", "DEF-005", "DEF-006", "DEF-007", "DEF-008", "DEF-009", "DEF-010", "DEF-011", "DEF-012", "DEF-013", "DEF-014", "DEF-015", "DEF-016", "DEF-021", "DEF-023", "DEF-024", "DEF-025", "DEF-026", "DEF-027"],

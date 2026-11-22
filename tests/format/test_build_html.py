@@ -119,6 +119,63 @@ class TestBuildHtml(unittest.TestCase):
         res = local_toolbox.op_format_html({"b": "   \n【起草说明】\n无"})
         self.assertFalse(res["ok"])
 
+    def test_sign_block_follows_gbt9704_7352(self) -> None:
+        html_doc, _ = build_html.build_html(SAMPLE_NOTICE.splitlines())
+        self.assertIn('<div class="gw-sign-block"><p class="gw-signature">某区人民政府办公室</p>'
+                      '<p class="gw-date">2026年11月22日</p></div>', html_doc)
+        # 块右缘右空二字，日期比署名右移二字
+        self.assertIn("margin: 28pt 2em 0 auto", html_doc)
+        self.assertRegex(html_doc, r"\.gw-date \{[^}]*padding-left: 2em")
+
+    def test_page_number_and_line_breaking(self) -> None:
+        html_doc, _ = build_html.build_html(SAMPLE_NOTICE.splitlines())
+        self.assertIn("@bottom-right", html_doc)
+        self.assertIn("@bottom-left", html_doc)
+        self.assertIn('content: "— " counter(page) " —"', html_doc)
+        self.assertNotRegex(html_doc, r"\.gw-p \{[^}]*word-break: break-all")
+        self.assertIn(".gw-wb { word-break: break-all; }", html_doc)
+
+    def test_material_alias_and_layout_options(self) -> None:
+        self.assertEqual(build_html.VALID_LAYOUTS, ("白头", "红头", "便签"))
+        _, report = build_html.build_html(SAMPLE_NOTICE.splitlines(), layout="材料")
+        self.assertEqual(report["layout"], "白头")
+        _, report = build_html.build_html(["关于加强窗口服务的汇报材料", "今年以来，窗口办件量稳步增长。"])
+        self.assertEqual(report["layout"], "白头")
+
+    def test_redhead_placeholder_not_printed(self) -> None:
+        html_doc, _ = build_html.build_html(SAMPLE_NOTICE.splitlines(), layout="红头")
+        self.assertIn('data-placeholder="', html_doc)
+        self.assertIn('<div class="gw-issuer" contenteditable="true"', html_doc)
+        self.assertIn(".gw-issuer:empty::before { content: none; }", html_doc)
+        self.assertNotIn(">（发文机关标志", html_doc)
+
+    def test_tail_kept_with_last_paragraph(self) -> None:
+        lines = ["关于停水检修的通知", "各位居民：", "明早8时停水，请提前储水。", "附件：停水范围示意图",
+                 "某社区居委会", "2026年11月22日"]
+        html_doc, _ = build_html.build_html(lines)
+        # 落款与附件说明、最后一段正文放进同一个不分页的容器，避免落款单独成页
+        self.assertRegex(html_doc, r'<div class="gw-tail"><p class="gw-p">明早8时停水，请提前储水。</p>'
+                                   r'<p class="gw-attachment gw-attachment-first">.*?<div class="gw-sign-block">')
+        self.assertIn(".gw-tail { break-inside: avoid;", html_doc)
+        # 表格之后直接是附件说明的，只把附件说明与落款放在一起
+        html_doc, _ = build_html.build_html(SAMPLE_NOTICE.splitlines())
+        self.assertIn('</table>\n<div class="gw-tail"><p class="gw-attachment gw-attachment-first">', html_doc)
+
+    def test_attachment_grid_alignment(self) -> None:
+        html_doc, _ = build_html.build_html(SAMPLE_NOTICE.splitlines())
+        self.assertIn('<span class="gw-att-label">附件：</span><span class="gw-att-no">1. </span>'
+                      '<span class="gw-att-name">参会回执表</span>', html_doc)
+        self.assertIn('<span class="gw-att-label"></span><span class="gw-att-no">2. </span>', html_doc)
+        self.assertIn("grid-template-columns: 3em auto 1fr", html_doc)
+
+    def test_long_ascii_token_breakable(self) -> None:
+        lines = ["关于公布查询网址的通知", "各单位：",
+                 "请登录 https://www.example.gov.cn/notice/2026/heating-plan.html 查询，联系电话010-12345678。",
+                 "某局", "2026年11月22日"]
+        html_doc, _ = build_html.build_html(lines)
+        self.assertIn('<span class="gw-wb">https://www.example.gov.cn/notice/2026/heating-plan.html</span>', html_doc)
+        self.assertNotIn('<span class="gw-wb">010-12345678</span>', html_doc)
+
 
 if __name__ == "__main__":
     unittest.main()

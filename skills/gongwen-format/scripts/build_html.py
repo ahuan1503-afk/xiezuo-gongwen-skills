@@ -7,11 +7,16 @@
   把公文纯文本直接渲染成单文件 .html：
   1. 内置 GB/T 9704-2012 A4 打印样式（上 37mm、下 35mm、左 28mm、右 26mm、28pt 行距）；
   2. 顶部工具条（打印/存 PDF 时自动隐藏）支持：打印/存 PDF、一键复制纯文本、一键复制富文本、
-     实时切换「白头 / 红头 / 材料 / 便签」四种版式；
+     实时切换「白头 / 红头 / 便签」三种版式（“材料”作为白头的别名接受）；
   3. 严守字体诚实原则：CSS 声明标准公文字体名，不冒充正式国标印刷成品；正式送签归档请用 build_docx.py。
 
 用法：
-  python3 build_html.py 正文.txt -o 成稿.html [--layout 白头|红头|材料|便签] [--meta 版式信息.json] [--json]
+  python3 build_html.py 正文.txt -o 成稿.html [--layout 白头|红头|便签] [--meta 版式信息.json] [--json]
+
+版式要点：
+  - 页码：打印时按 GB/T 9704-2012 7.5 编排“— 1 —”，单页码居右空一字、双页码居左空一字（需浏览器支持 @page 页边距区域，
+    如 Chrome/Edge 131 及以上；不支持的浏览器打印时没有页码）；
+  - 署名、成文日期：按 7.3.5.2 不加盖印章的排法，署名右空二字，成文日期首字比署名首字右移二字，日期较长时署名随之左移、日期右空二字。
 """
 from __future__ import annotations
 
@@ -29,13 +34,44 @@ if _SCRIPTS_DIR not in sys.path:
 
 import gw_layout  # noqa: E402
 
-VALID_LAYOUTS = ("白头", "红头", "材料", "便签")
+VALID_LAYOUTS = ("白头", "红头", "便签")
+# 旧版本的“材料”版式与白头样式完全相同，保留为别名，命令行和版式信息里写“材料”照常可用
+LAYOUT_ALIASES = {"材料": "白头"}
+ACCEPTED_LAYOUTS = VALID_LAYOUTS + tuple(LAYOUT_ALIASES)
 _PIPE_ROW_RE = re.compile(r"^\s*\|(.+)\|\s*$")
 _PIPE_SEP_RE = re.compile(r"^\s*\|[\s:\-|]+\|\s*$")
 
 
+_LONG_TOKEN_RE = re.compile(r"[A-Za-z0-9:/?#\[\]@!$&'()*+,;=._~%\-]{20,}")
+
+
 def _escape(text: str) -> str:
     return html.escape(text, quote=True)
+
+
+def _escape_body(text: str) -> str:
+    """正文转义；20 个字符以上的连续英文串（网址、邮箱、长编号）包一层可任意断行的 span，
+    避免整串挤到下一行、把上一行两端对齐拉出大空隙。数字、短英文仍按常规断行，不会被拆开。"""
+    out: List[str] = []
+    pos = 0
+    for m in _LONG_TOKEN_RE.finditer(text):
+        out.append(_escape(text[pos:m.start()]))
+        out.append(f'<span class="gw-wb">{_escape(m.group(0))}</span>')
+        pos = m.end()
+    out.append(_escape(text[pos:]))
+    return "".join(out)
+
+
+_ATTACH_RE = re.compile(r"^(附件[：:])?\s*(\d+\s*[.．、]\s*)?(.*)$", re.S)
+
+
+def _render_attachment(text: str, first: bool) -> str:
+    """附件说明按 GB/T 9704 7.3.4：“附件：”左空二字，多个附件的序号对齐，名称回行时与名称首字对齐。"""
+    m = _ATTACH_RE.match(text.strip())
+    label, num, name = (m.group(1) or "", m.group(2) or "", m.group(3)) if m else ("", "", text)
+    cls = "gw-attachment gw-attachment-first" if first else "gw-attachment"
+    return (f'<p class="{cls}"><span class="gw-att-label">{_escape(label)}</span>'
+            f'<span class="gw-att-no">{_escape(num)}</span><span class="gw-att-name">{_escape_body(name)}</span></p>')
 
 
 def read_body_lines(text: str) -> List[str]:
@@ -50,19 +86,18 @@ def read_body_lines(text: str) -> List[str]:
 
 def _detect_layout(parsed: "gw_layout.ParsedDoc", meta: Dict[str, object], explicit: Optional[str]) -> str:
     if explicit:
+        explicit = LAYOUT_ALIASES.get(explicit, explicit)
         if explicit not in VALID_LAYOUTS:
             raise ValueError(f"不支持的 HTML 版式：{explicit}（可选：{'、'.join(VALID_LAYOUTS)}）")
         return explicit
     meta_layout = str(meta.get("版式") or meta.get("layout") or "").strip()
+    meta_layout = LAYOUT_ALIASES.get(meta_layout, meta_layout)
     if meta_layout in VALID_LAYOUTS:
         return meta_layout
     has_issuer = bool(meta.get("发文机关标志")) or any(it.role == "issuer" for it in parsed.items)
     if has_issuer:
         return "红头"
-    has_recipient = any(it.role in ("recipient", "salutation") for it in parsed.items)
-    if has_recipient:
-        return "白头"
-    return "材料"
+    return "白头"
 
 
 def _render_heading(text: str, role: str, split: Optional[int]) -> str:
@@ -70,9 +105,9 @@ def _render_heading(text: str, role: str, split: Optional[int]) -> str:
     cls = f"gw-{role}"
     if end < len(text):
         head = _escape(text[:end])
-        tail = _escape(text[end:])
+        tail = _escape_body(text[end:])
         return f'<p class="gw-p gw-inline-heading"><span class="{cls}-inline">{head}</span>{tail}</p>'
-    return f'<p class="gw-p {cls}">{_escape(text)}</p>'
+    return f'<p class="gw-p {cls}">{_escape_body(text)}</p>'
 
 
 def _render_pipe_table(rows: Sequence[str]) -> str:
@@ -112,12 +147,10 @@ def _extract_meta_header(parsed: "gw_layout.ParsedDoc", meta: Dict[str, object])
 def _render_items(parsed: "gw_layout.ParsedDoc", meta: Dict[str, object]) -> Tuple[str, str, Dict[str, object]]:
     issuer, docno, signer = _extract_meta_header(parsed, meta)
     header_parts: List[str] = []
-    if issuer:
-        issuer_html = "<br>".join(_escape(ln) for ln in issuer.splitlines() if ln.strip())
-    else:
-        issuer_html = "（发文机关标志，点击可直接编辑）"
+    issuer_html = "<br>".join(_escape(ln) for ln in issuer.splitlines() if ln.strip()) if issuer else ""
     header_parts.append(
-        f'<div class="gw-issuer" contenteditable="true" title="红头版式下可直接点击修改">{issuer_html}</div>'
+        '<div class="gw-issuer" contenteditable="true" title="红头版式下可直接点击修改" '
+        f'data-placeholder="（发文机关标志，点击填写；未填写的不打印）">{issuer_html}</div>'
     )
     if docno or signer:
         if signer:
@@ -174,12 +207,26 @@ def _render_items(parsed: "gw_layout.ParsedDoc", meta: Dict[str, object]) -> Tup
             counts[role] += 1
             body_parts.append(_render_heading(text, role, item.split))
         elif role == "attachment":
-            cls = "gw-attachment gw-attachment-first" if item.first else "gw-attachment"
-            body_parts.append(f'<p class="{cls}">{_escape(text)}</p>')
-        elif role == "signature":
-            body_parts.append(f'<p class="gw-signature">{_escape(text)}</p>')
-        elif role == "date":
-            body_parts.append(f'<p class="gw-date">{_escape(text)}</p>')
+            body_parts.append(_render_attachment(text, bool(item.first)))
+        elif role in ("signature", "date"):
+            # 连续的署名、成文日期合成一个落款块，按 GB/T 9704 7.3.5.2 定位
+            sign_parts: List[str] = []
+            while i < len(items) and items[i].role in ("signature", "date", "blank"):
+                if items[i].role != "blank":
+                    cls = "gw-signature" if items[i].role == "signature" else "gw-date"
+                    sign_parts.append(f'<p class="{cls}">{_escape(items[i].text)}</p>')
+                i += 1
+            block = '<div class="gw-sign-block">' + "".join(sign_parts) + "</div>"
+            # 落款不单独成页：把紧挨着的附件说明和最后一段正文与落款放进同一个不分页的容器
+            j = len(body_parts)
+            while j > 0 and body_parts[j - 1].startswith('<p class="gw-attachment'):
+                j -= 1
+            if j > 0 and body_parts[j - 1].startswith('<p class="gw-p'):
+                j -= 1
+            tail = body_parts[j:]
+            del body_parts[j:]
+            body_parts.append('<div class="gw-tail">' + "".join(tail) + block + "</div>")
+            continue
         elif role == "note":
             body_parts.append(f'<p class="gw-note">{_escape(text)}</p>')
         elif role in ("cc", "print", "banji_main"):
@@ -187,7 +234,7 @@ def _render_items(parsed: "gw_layout.ParsedDoc", meta: Dict[str, object]) -> Tup
             body_parts.append(f'<p class="{cls}">{_escape(text)}</p>')
         else:
             counts["body"] += 1
-            body_parts.append(f'<p class="gw-p">{_escape(text)}</p>')
+            body_parts.append(f'<p class="gw-p">{_escape_body(text)}</p>')
         i += 1
 
     # 版记补充（来自 meta 且正文未写）
@@ -226,6 +273,32 @@ _CSS = """
 @page {
   size: A4;
   margin: 37mm 26mm 35mm 28mm;
+}
+/* 页码（GB/T 9704-2012 7.5）：4 号半角宋体，一字线上距版心下边缘 7mm；单页码居右空一字，双页码居左空一字 */
+@page :right {
+  @bottom-right {
+    content: "— " counter(page) " —";
+    font-family: "SimSun", "宋体", "Songti SC", serif;
+    font-size: 14pt;
+    vertical-align: top;
+    padding-top: 7mm;
+    padding-right: 1em;
+  }
+}
+@page :left {
+  @bottom-left {
+    content: "— " counter(page) " —";
+    font-family: "SimSun", "宋体", "Songti SC", serif;
+    font-size: 14pt;
+    vertical-align: top;
+    padding-top: 7mm;
+    padding-left: 1em;
+  }
+}
+/* 便签版式贴门、发群用，打印不加页码 */
+@page gw-note {
+  @bottom-right { content: none; }
+  @bottom-left { content: none; }
 }
 * { box-sizing: border-box; }
 html, body {
@@ -290,6 +363,8 @@ html, body {
 }
 .gw-redhead { display: none; margin-bottom: 18pt; }
 .gw-page[data-layout="红头"] .gw-redhead { display: block; }
+.gw-issuer:empty { min-height: 40pt; }
+.gw-issuer:empty::before { content: attr(data-placeholder); font-size: 16pt; color: #d48806; letter-spacing: 0; }
 .gw-issuer {
   text-align: center;
   color: #d60000;
@@ -344,7 +419,8 @@ html, body {
   margin: 0;
   text-indent: 2em;
   text-align: justify;
-  word-break: break-all;
+  overflow-wrap: anywhere;
+  line-break: strict;
 }
 .gw-h1 {
   font-family: "SimHei", "黑体", "Heiti SC", sans-serif;
@@ -358,25 +434,37 @@ html, body {
   font-family: "FangSong_GB2312", "仿宋_GB2312", "FangSong", "仿宋", serif;
   font-weight: 600;
 }
+/* 附件说明（7.3.4）：三列网格，“附件：”占 3 字宽，序号列按内容宽度，名称回行与名称首字对齐 */
 .gw-attachment {
+  display: grid;
+  grid-template-columns: 3em auto 1fr;
   margin: 0;
-  padding-left: 5em;
+  padding-left: 2em;
   text-align: justify;
+  text-indent: 0;
 }
-.gw-attachment-first {
-  margin-top: 28pt;
-  text-indent: -3em;
+.gw-attachment-first { margin-top: 28pt; }
+.gw-att-label, .gw-att-no { white-space: nowrap; }
+.gw-wb { word-break: break-all; }
+.gw-tail { break-inside: avoid; page-break-inside: avoid; }
+/* 落款块（GB/T 9704-2012 7.3.5.2 不加盖印章）：块右缘右空二字；署名顶块左缘，成文日期比署名右移二字。
+   署名较长时日期随署名首字定位；日期较长时块变宽，署名随之左移，日期右空二字 */
+.gw-sign-block {
+  width: fit-content;
+  margin: 28pt 2em 0 auto;
+  text-indent: 0;
+  break-inside: avoid;
+  page-break-inside: avoid;
 }
 .gw-signature {
-  margin: 28pt 0 0;
-  padding-right: 4em;
-  text-align: right;
+  margin: 0;
+  text-align: left;
   text-indent: 0;
 }
 .gw-date {
   margin: 0;
-  padding-right: 4em;
-  text-align: right;
+  padding-left: 2em;
+  text-align: left;
   text-indent: 0;
 }
 .gw-note {
@@ -426,6 +514,7 @@ html, body {
 }
 /* 便签 / 内部简短通知版式：紧凑美观，适合贴门、OA、快捷打印 */
 .gw-page[data-layout="便签"] {
+  page: gw-note;
   min-height: auto;
   padding: 22mm 20mm 22mm 20mm;
   font-size: 15pt;
@@ -444,6 +533,7 @@ html, body {
   html, body { background: #fff !important; }
   .no-print { display: none !important; }
   .gw-canvas { padding: 0 !important; }
+  .gw-issuer:empty::before { content: none; }
   .gw-page {
     width: auto !important;
     min-height: auto !important;
@@ -461,6 +551,12 @@ _JS = """
   var st = document.getElementById('gwStatus');
   var rawEl = document.getElementById('gwRawText');
   function tip(msg){ if(st) st.textContent = msg; }
+  function legacyCopy(txt){
+    if(!rawEl){ tip('请手动复制正文'); return; }
+    rawEl.value = txt; rawEl.style.display = 'block'; rawEl.select();
+    try{ tip(document.execCommand('copy') ? '已复制纯文本' : '请手动复制正文'); }catch(e){ tip('请手动复制正文'); }
+    rawEl.style.display = 'none';
+  }
   if(sel){
     sel.onchange = function(){
       page.setAttribute('data-layout', sel.value);
@@ -471,11 +567,9 @@ _JS = """
   document.getElementById('btnCopyPlain').onclick = function(){
     var txt = rawEl ? rawEl.value : page.innerText;
     if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(txt).then(function(){ tip('已复制纯文本（可直接粘贴微信/OA）'); });
+      navigator.clipboard.writeText(txt).then(function(){ tip('已复制纯文本（可直接粘贴微信/OA）'); }, function(){ legacyCopy(txt); });
     } else {
-      rawEl.style.display = 'block'; rawEl.select();
-      try{ document.execCommand('copy'); tip('已复制纯文本'); }catch(e){ tip('请手动复制正文'); }
-      rawEl.style.display = 'none';
+      legacyCopy(txt);
     }
   };
   document.getElementById('btnCopyRich').onclick = function(){
@@ -563,7 +657,7 @@ def render_report(report: Dict[str, object]) -> str:
         f"已生成单文件 HTML 轻排版（版式：{report.get('layout')}，约 {report.get('chars')} 字）。",
         f"标题：{report.get('title') or '（未识别）'}",
         f"结构：一级标题 {c.get('h1', 0)}、二级 {c.get('h2', 0)}、三级 {c.get('h3', 0)}、正文段 {c.get('body', 0)}、表格 {c.get('table', 0)}。",
-        "用法：双击用浏览器打开即可预览，支持一键打印/存为 PDF、复制纯文本（发微信/OA）或富文本（粘进 Word/WPS），以及页面内切换白头/红头/材料/便签版式。",
+        "用法：双击用浏览器打开即可预览，支持一键打印/存为 PDF（Chrome/Edge 131 及以上打印带页码）、复制纯文本（发微信/OA）或富文本（粘进 Word/WPS），以及页面内切换白头/红头/便签版式。",
         "提示：HTML 版面向日常通知与快速打印；正式红头送签与 OA 归档请使用 build_docx.py 生成国标 .docx。",
     ]
     if report.get("output"):
@@ -580,7 +674,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     ap = argparse.ArgumentParser(description="生成单文件 GB/T 9704 轻量 HTML 公文页（零依赖，支持打印/存 PDF 与一键复制）。")
     ap.add_argument("input", type=Path, help="公文纯文本文件路径（.txt / .md）")
     ap.add_argument("-o", "--output", type=Path, help="输出 .html 路径（默认与输入同目录同名 .html）")
-    ap.add_argument("--layout", choices=VALID_LAYOUTS, help="指定版式：白头、红头、材料、便签（默认按正文自动判断）")
+    ap.add_argument("--layout", choices=ACCEPTED_LAYOUTS, help="指定版式：白头、红头、便签（“材料”同白头；默认按正文自动判断）")
     ap.add_argument("--meta", type=Path, help="可选版式信息 JSON（发文机关标志、发文字号、签发人、抄送等）")
     ap.add_argument("--json", action="store_true", dest="as_json", help="以 JSON 格式输出报告")
     args = ap.parse_args(argv)

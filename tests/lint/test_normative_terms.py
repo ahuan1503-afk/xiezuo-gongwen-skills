@@ -117,6 +117,27 @@ class UnitNormativeTableTest(TempDirMixin, unittest.TestCase):
         self.assertEqual(found[("BAN-001", "县卫计委")]["suggestion"], "县卫生健康局")
         self.assertIn(("BAN-001", "拉满"), found)
 
+    def test_header_detection_by_column_prefix(self):
+        # “不规范原因”“规范依据”列不能被当成词语列或替换列
+        md = (
+            "# 禁用词\n\n"
+            "| 词语 | 级别 | 不规范原因 | 规范依据 | 替换建议 |\n"
+            "|---|---|---|---|---|\n"
+            "| 拉满 | 禁用 | 网络语 | 本单位宣传规定 | 显著提升 |\n"
+        )
+        terms = gl.load_banned(self.write("禁用词.md", md))
+        self.assertEqual([t.term for t in terms], ["拉满"])
+        self.assertEqual(terms[0].suggestion, "显著提升")
+
+
+class NormativeFalsePositiveTest(unittest.TestCase):
+    def test_correct_usages_not_flagged(self):
+        for text in ("保障群众依法行使权利。", "当事人有权依法行使法定权利。", "其中传统文化部分内容由宣传科负责。",
+                     "农业部分指标完成情况见附表。", "抓好春季农业部署，确保不误农时。", "确保群众安全度过汛期。"):
+            with self.subTest(text=text):
+                found = [i["id"] for i in run(text, "通知", "term")["issues"] if i["id"].startswith("TRM-")]
+                self.assertEqual(found, [])
+
 
 if __name__ == "__main__":
     unittest.main()

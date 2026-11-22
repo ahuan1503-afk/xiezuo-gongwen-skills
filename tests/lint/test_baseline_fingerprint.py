@@ -73,13 +73,14 @@ class FingerprintTest(unittest.TestCase):
         res_all = fp(heavy_text, "通知")
         self.assertIn("DEF-028", ids(res_all))
         self.assertNotIn("FGP-002", ids(res_all))
-        self.assertEqual(res_all["fingerprint"]["modals"]["强制"], 35)
+        # “应当”是规范性义务用语，不计入强制词：每句 必须2 + 不得2 + 严禁2
+        self.assertEqual(res_all["fingerprint"]["modals"]["强制"], 30)
         fgp2 = [i for i in res_style["issues"] if i["id"] == "FGP-002"][0]
         self.assertGreater(fgp2["line"], 0)
 
     def test_force_density_by_doc_type(self) -> None:
         # 每千字约 4.5 处：通知（阈值 3）报告，函（阈值 6，引述法定义务多）不报告
-        core = "依照条例规定，申请人应当提交完整材料，不得隐瞒有关情况。"
+        core = "依照条例规定，申请人严禁伪造材料，不得隐瞒有关情况。"
         filler = "按时完成日常检查记录。"
         body = (filler * 36 + core) * 4
         for doc_type, expect in (("通知", True), ("函", False)):

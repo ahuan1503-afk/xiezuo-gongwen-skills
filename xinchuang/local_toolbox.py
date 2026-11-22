@@ -239,15 +239,20 @@ document.querySelectorAll('button[data-op]').forEach(function(btn){
         for(var i=0;i<bin.length;i++){u[i]=bin.charCodeAt(i);}
         var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([u]));
         a.download='成稿.docx';document.body.appendChild(a);a.click();a.remove();
+        setTimeout(function(){URL.revokeObjectURL(a.href);},60000);
       }
       if(r.html_b64){
         var hbin=atob(r.html_b64),hu=new Uint8Array(hbin.length);
         for(var j=0;j<hbin.length;j++){hu[j]=hbin.charCodeAt(j);}
         var hblob=new Blob([hu],{type:'text/html;charset=utf-8'});
         var hurl=URL.createObjectURL(hblob);
-        var ha=document.createElement('a');ha.href=hurl;
-        ha.download='公文轻排版.html';document.body.appendChild(ha);ha.click();ha.remove();
-        try{window.open(hurl,'_blank');}catch(e){}
+        // 优先在新标签页打开预览（页内可打印/存 PDF）；被浏览器拦截弹窗时改为下载，只触发一次
+        var hw=null;try{hw=window.open(hurl,'_blank');}catch(e){hw=null;}
+        if(!hw){
+          var ha=document.createElement('a');ha.href=hurl;
+          ha.download='公文轻排版.html';document.body.appendChild(ha);ha.click();ha.remove();
+        }
+        setTimeout(function(){URL.revokeObjectURL(hurl);},60000);
       }
     }).catch(function(e){showResult({ok:false,text:'请求失败：'+e});});
   };

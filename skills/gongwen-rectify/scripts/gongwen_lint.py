@@ -2597,7 +2597,7 @@ def load_banned(path: Path) -> List[BannedTerm]:
                 # 表头：按列名定位各列，找不到词语列时取第一列
                 def find(pattern: str) -> Optional[int]:
                     return next((i for i, c in enumerate(cells) if re.search(pattern, c)), None)
-                term_col = find(r"^(?:常见)?(?:误写|旧称|不规范)")
+                term_col = find(r"^(?:常见|机构)?(?:误写|旧称|不规范)(?:写法|表述|名称|用语|提法|词语?)?$")
                 if term_col is None:
                     term_col = find(r"词|表述|用语|提法")
                 cols = {"term": term_col if term_col is not None else 0, "level": find(r"级别|等级|类别|类型"),
