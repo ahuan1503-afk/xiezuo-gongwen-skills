@@ -147,7 +147,7 @@ license: PolyForm-Noncommercial-1.0.0
 | `references/checklist-8gates.md`、`unit-checks.md`、`tifa-risk.md` | 第四步审读；无脚本时用 checklist 第九部分 |
 | `references/opinion-template.md` | 保密暂停提示、核稿意见、修改说明 |
 | `references/_shared/guardrails.md` | 开工前；保密、事实、不代笔底线 |
-| `references/_shared/rules/` | 写依据条款号：tiaoli.md（行文规则）、doc-types.md（文种）、gbt9704.md（格式）、gbt15834.md 和 gbt15835.md（标点数字）、jianfu.md（篇幅和减负） |
+| `references/_shared/rules/` | 写依据条款号：tiaoli.md、doc-types.md、gbt9704.md、gbt15834.md、gbt15835.md、jianfu.md、normative-terms.md（高频规范词与机构旧称） |
 | `references/_shared/style/` | output-format.md（改后全文、起草说明、交接卡与转交）；ai-tone.md、defensive.md（AI 腔和防御性表述） |
 | `references/_shared/profiles/` | roles.md 确定角色模式；units/ 下为单位画像细节 |
 | `scripts/gongwen_lint.py`、`scripts/change_guard.py` | 第三步机检；第七步核对改稿前后事实 |

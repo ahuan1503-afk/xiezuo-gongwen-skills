@@ -53,6 +53,9 @@
       "src": "rules/gbt15835.md"
     },
     {
+      "src": "rules/normative-terms.md"
+    },
+    {
       "src": "scripts/gongwen_lint.py",
       "dest": "scripts/gongwen_lint.py"
     },

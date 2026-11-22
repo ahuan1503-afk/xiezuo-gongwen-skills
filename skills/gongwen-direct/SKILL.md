@@ -49,9 +49,9 @@ AI 写的公文常给自己留后路：结尾挂“仅供参考”，部署写�
 
 有 Python 时：
 1. 原稿是粘贴文本的，先存为 `公文/<YYYYMMDD>-<简短标题>/原稿.txt`（同名已存在时加 -v2，不覆盖）。用户给的是文件（包括上一站产出的 `正文.txt`）时，直接以该文件为原稿，不另存、不改动它。
-2. 运行：`python scripts/gongwen_lint.py <原稿文件> --doc-type <文书类型> --checks defensive,residue --json`
-3. 不传 `--doc-type` 时，引擎按标题推断，推断不出按“其他”；为避免误判（如请示、报告里正当的“建议”被 DEF-015、DEF-021 误报），**调用时一律传 `--doc-type`**。
-4. 读 JSON 的 issues：P0 必改；P1 按改写指南 `references/rewrite-guide.md` 对应部分判断后改；P2 逐条人工判断。命中“哪些不删”（rewrite-guide 第九部分）的不改，记入“保留项”。
+2. 运行：`python scripts/gongwen_lint.py <原稿文件> --doc-type <文书类型> --checks defensive,residue,term --json`（有 `.gongwen/禁用词.md` 加 `--banned .gongwen/禁用词.md`）
+3. **调用时一律传 `--doc-type`**（防止请示、报告里的正当“建议”被误报）。
+4. 读 JSON：P0 必改；P1 按 `references/rewrite-guide.md` 改；P2 人工判断。命中“哪些不删”（第九部分）记入“保留项”。
 5. 输出中 char_count 为 0，或提示“尚在开发”“未执行检查”的，视为机检没有运行。
 
 没有 Python 或机检没有运行时：按改写指南第十一部分速查表逐类检索，起草说明写“未运行机检，按速查表人工诊断”。机检跑过的，也要按速查表中标“人工”的几行补查，如“本方案仅供参考”“仅供领导参考”“不够全面”，这类变体说法规则不一定覆盖。

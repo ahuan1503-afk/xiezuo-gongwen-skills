@@ -42,7 +42,7 @@ DEFAULT_PATTERNS = SCRIPT_DIR / "style_patterns.json"
 
 # 检查类别（顺序即输出顺序），与开发规范第 8 节一致
 CHECK_ORDER = (
-    "residue", "punct", "number", "format", "structure",
+    "residue", "punct", "number", "format", "structure", "term",
     "style", "defensive", "privacy", "legal", "jianfu", "marker", "length",
 )
 CHECK_NAMES = {
@@ -51,6 +51,7 @@ CHECK_NAMES = {
     "number": "数字",
     "format": "格式要素",
     "structure": "结构",
+    "term": "规范用词",
     "style": "AI味",
     "defensive": "防御性",
     "privacy": "隐私与保密",
@@ -975,7 +976,7 @@ class Linter:
             for func in self._procedures().get(check, ()):
                 issues.extend(func(doc, doc_type))
         issues.extend(self._run_style(doc, doc_type, checks))
-        if banned and "style" in checks:
+        if banned and ("style" in checks or "term" in checks):
             issues.extend(self._check_banned(doc, doc_type, banned))
         issues = self._resolve_yields(issues)
         issues = self._apply_once(issues)
@@ -1810,8 +1811,8 @@ class Linter:
                          r"(?<![一-鿿])此复|请予(?:以)?(?:支持|协助|配合|办理|研究|同意|批准|审批)|为盼|为荷|是荷|敬请|烦请|恳请|"
                          r"谢谢|感谢"),
         "批复": re.compile(r"此复|特此(?:批复|函复)|请(?:遵照|按照|认真)(?:执行|落实|办理)|遵照执行"),
-        "公告": re.compile(r"特此公告|现予公告|予以公告|特此通告"),
-        "通告": re.compile(r"特此通告|特此公告|现予通告"),
+        "公告": re.compile(r"特此公告|现予公告|予以公告"),
+        "通告": re.compile(r"特此通告|现予通告|予以通告"),
     }
     ELM_CLOSING_ALIAS = {"整改报告": "报告", "自查报告": "报告", "自评报告": "报告"}
     ELM_CLOSING_HINT = {
@@ -2482,10 +2483,10 @@ BANNED_WILDCARDS = ("……", "…", "×××", "XXX")
 
 
 def _banned_level(text: str) -> Optional[bool]:
-    """“慎用”返回 False，“禁用”“不用”“停用”返回 True，看不出返回 None。"""
+    """“慎用”返回 False，“禁用”“不用”“停用”“规范”“统一”返回 True，看不出返回 None。"""
     if "慎用" in text or "少用" in text:
         return False
-    if "禁用" in text or "不用" in text or "停用" in text or "不得使用" in text:
+    if any(k in text for k in ("禁用", "不用", "停用", "不得使用", "规范", "统一", "必改")):
         return True
     return None
 
@@ -2575,9 +2576,11 @@ def load_banned(path: Path) -> List[BannedTerm]:
                 # 表头：按列名定位各列，找不到词语列时取第一列
                 def find(pattern: str) -> Optional[int]:
                     return next((i for i, c in enumerate(cells) if re.search(pattern, c)), None)
-                term_col = find(r"词|表述|用语|提法")
+                term_col = find(r"误写|旧称|不规范")
+                if term_col is None:
+                    term_col = find(r"词|表述|用语|提法")
                 cols = {"term": term_col if term_col is not None else 0, "level": find(r"级别|等级|类别|类型"),
-                        "reason": find(r"原因|理由|来源|依据"), "suggestion": find(r"替换|建议|改为|替代"),
+                        "reason": find(r"原因|理由|来源|依据"), "suggestion": find(r"替换|建议|改为|替代|(?<!不)规范|统一"),
                         "scope": find(r"适用|范围")}
                 continue
             spec = cols or {"term": 0, "level": None, "reason": None, "suggestion": None, "scope": None}
@@ -2816,9 +2819,9 @@ def fingerprint_hints(doc: Document, doc_type: str) -> Tuple[List[Issue], List[s
     short_ratio = round(100.0 * sum(1 for s in sents if len(s) <= 15) / len(sents), 1) if sents else 0.0
     long_ratio = round(100.0 * sum(1 for s in sents if len(s) >= 50) / len(sents), 1) if sents else 0.0
 
-    # 2. 力度词配额（剔除引号内短概念与“不得不”）
+    # 2. 力度词配额（剔除引号内短概念、“不得不”与法定提法“三管三必须”）
     depunct = _FGP_QUOTE_STRIP_RE.sub("", plain)
-    force_text = depunct.replace("不得不", "＃＃＃")
+    force_text = depunct.replace("不得不", "＃＃＃").replace("三管三必须", "＃＃＃＃＃")
     force_cnt = sum(force_text.count(w) for w in _FGP_FORCE_WORDS)
     req_cnt = sum(depunct.count(w) for w in _FGP_REQ_WORDS)
     sug_cnt = sum(depunct.count(w) for w in _FGP_SUG_WORDS)
@@ -2978,8 +2981,8 @@ def _lint_document(doc: Document, doc_type: Optional[str], checks: Optional[str]
         all_notes.append(f"文书类型“{dtype}”不在统一词表中，按文种限定的规则不会生效。")
     issues = linter.lint(doc, dtype, set(check_list), banned)
     if banned is not None:
-        if "style" not in check_list:
-            all_notes.append("未检查 style 类，禁用词表没有比对。")
+        if "style" not in check_list and "term" not in check_list:
+            all_notes.append("未检查 style 或 term 类，禁用词表没有比对。")
         elif not banned:
             all_notes.append("禁用词表中没有识别出词条（格式见单位画像模板第三部分：表格第一列为词语，“级别”列填禁用或慎用）。")
         else:

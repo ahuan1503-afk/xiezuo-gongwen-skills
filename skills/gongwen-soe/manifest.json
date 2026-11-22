@@ -47,6 +47,9 @@
       "src": "rules/gbt15834.md"
     },
     {
+      "src": "rules/normative-terms.md"
+    },
+    {
       "src": "profiles/roles.md"
     },
     {

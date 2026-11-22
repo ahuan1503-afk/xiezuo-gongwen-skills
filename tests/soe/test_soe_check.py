@@ -73,7 +73,7 @@ class RuleFileTest(SoeCheckBase):
     """规则文件本身的完整性，以及每条正则规则的命中、不命中例句。"""
 
     def test_rules_load(self) -> None:
-        self.assertEqual(len(self.ruleset.rules), 16)
+        self.assertEqual(len(self.ruleset.rules), 20)
         self.assertEqual(set(self.ruleset.procedural), set(sc.PROCEDURAL_IDS))
         self.assertIn("改革台账", self.ruleset.types)
         self.assertIn("ESG报告", self.ruleset.external_types)

@@ -842,5 +842,13 @@ class SpecimenTest(NoticeCheckTestCase):
             self.assert_clean(self.check_specimen(path.name))
 
 
+    def test_nonstandard_statute_names(self):
+        bad = PASS_WUGONGKAI + "\n依据《村委会法》和《居委会法》规定执行。\n"
+        res = self.check(bad)
+        self.assertEqual(self.ids(res, "P1").count("NTC-020"), 2)
+        good = PASS_WUGONGKAI + "\n依据《村民委员会组织法》和《城市居民委员会组织法》规定执行。\n"
+        self.assertNotIn("NTC-020", self.ids(self.check(good)))
+
+
 if __name__ == "__main__":
     unittest.main()

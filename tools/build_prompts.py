@@ -567,6 +567,7 @@ RAG_SHARED_SOURCES: Tuple[Tuple[str, str], ...] = (
     ("rules/gbt15835.md", "数字规范15835"),
     ("rules/jianfu.md", "基层减负规定"),
     ("rules/data-expression.md", "数据表述规范"),
+    ("rules/normative-terms.md", "规范用词与机构旧称"),
     ("style/ai-tone.md", "去AI腔规范"),
     ("style/defensive.md", "去防御腔规范"),
     ("style/output-format.md", "输出与交接规范"),

@@ -156,7 +156,13 @@ REPEALED_LAWS: Tuple[Tuple[str, str], ...] = (
     ("森林防火条例", "《森林草原防灭火条例》（2025年11月公布，2026年1月1日起施行）"),
     ("草原防火条例", "《森林草原防灭火条例》（2025年11月公布，2026年1月1日起施行）"),
 )
+# 不规范法规简称：(书名号内误写, 规范名称)
+NONSTANDARD_LAWS: Tuple[Tuple[str, str], ...] = (
+    ("村委会法", "《村民委员会组织法》（或全称《中华人民共和国村民委员会组织法》）"),
+    ("居委会法", "《城市居民委员会组织法》（或全称《中华人民共和国城市居民委员会组织法》）"),
+)
 BASIS_REPEALED = "《森林草原防灭火条例》第六十三条（《森林防火条例》《草原防火条例》同时废止）"
+BASIS_STATUTE_NAME = "references/glossary.md 第六部分（基层法规名称规范）"
 
 BASIS_ELEMENTS = "references/templates/jumin-wenshu.md；references/_shared/profiles/units/shequ.md 第八、九部分"
 BASIS_PLAIN = "references/_shared/profiles/units/shequ.md 第九部分（对居民说大白话）；60 字为工具约定"
@@ -685,6 +691,13 @@ class Checker:
                 self.add("NTC-016", "P1", "依据", hits[0], f"《{name}》",
                          f"引用的《{name}》已废止{extra}",
                          f"改为引用{replacement}，条号按新条例对应调整", BASIS_REPEALED)
+        for bad, std in NONSTANDARD_LAWS:
+            hits = [n for n, t in self.body if f"《{bad}》" in t]
+            if hits:
+                extra = f"（全文共 {len(hits)} 处）" if len(hits) > 1 else ""
+                self.add("NTC-020", "P1", "规范用词", hits[0], f"《{bad}》",
+                         f"法规名称简称不规范{extra}",
+                         f"改为{std}", BASIS_STATUTE_NAME)
 
     # 九、村（社区）常见的强制措施 ----------------------------------------------
     def _signed_by_grassroots(self) -> bool:

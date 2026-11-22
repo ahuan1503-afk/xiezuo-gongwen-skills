@@ -2164,6 +2164,342 @@
         "2026年，护理部围绕护理质量、人员培训开展工作。",
         "全年完成检查12次，整改隐患36处。"
       ]
+    },
+    {
+      "id": "TRM-001",
+      "check": "term",
+      "category": "规范用词",
+      "gate": "文字关",
+      "level": "P1",
+      "pattern": "截止(?:目前|当前|现阶段|今天|今日|本月底|本年底|年底|月底|季末|去年底|上年底|现在|至|到|\\s*(?:19|20)\\d{2}\\s*年|\\s*\\d{1,2}\\s*月)|截至到",
+      "message": "“截止”与“截至”误用（“截至”用于时间点前，“截止”不直接接时间宾语；不写“截止到”“截至到”）",
+      "suggestion": "带时间点改为“截至……”（如“截至2026年10月底”“截至目前”）；表示结束写作“于×月×日截止”",
+      "basis": "《现代汉语规范词典》；references/_shared/rules/normative-terms.md 第一部分",
+      "doc_types": [],
+      "exempt_doc_types": [],
+      "skip_in_quotes": true,
+      "fixes": [
+        [
+          "^截止到",
+          "截至"
+        ],
+        [
+          "^截至到",
+          "截至"
+        ],
+        [
+          "^截止至",
+          "截至"
+        ],
+        [
+          "^截止",
+          "截至"
+        ]
+      ],
+      "hit_examples": [
+        "截止2026年10月底，共完成排查120处。",
+        "截止目前，各项整改任务均已启动。",
+        "截止到11月15日，已有18家单位报送材料。",
+        "截至到年底，完成全部验收。"
+      ],
+      "miss_examples": [
+        "截至2026年10月底，共完成排查120处。",
+        "报名于2026年10月31日截止。",
+        "材料报送截止时间为11月15日17时。"
+      ]
+    },
+    {
+      "id": "TRM-002",
+      "check": "term",
+      "category": "规范用词",
+      "gate": "文字关",
+      "level": "P1",
+      "pattern": "布署",
+      "message": "“布署”为常见误写，公文安排工作一律用“部署”",
+      "suggestion": "改为“部署”",
+      "basis": "《现代汉语词典》；references/_shared/rules/normative-terms.md 第一部分",
+      "doc_types": [],
+      "exempt_doc_types": [],
+      "skip_in_quotes": true,
+      "fixes": [
+        [
+          "布署",
+          "部署"
+        ]
+      ],
+      "hit_examples": [
+        "召开专题会议布署冬季安全防范工作。"
+      ],
+      "miss_examples": [
+        "召开专题会议部署冬季安全防范工作。"
+      ]
+    },
+    {
+      "id": "TRM-003",
+      "check": "term",
+      "category": "规范用词",
+      "gate": "文字关",
+      "level": "P2",
+      "pattern": "做出了?(?:重要|重大|严肃|积极|突出|更大|新的|明确|专门)?(?:决定|决策|部署|批示|指示|处分|处罚|裁定|裁决|判决|决议|答复|回应|表态|承诺|规定|安排|贡献|牺牲)",
+      "message": "抽象决定、部署、批示、贡献等搭配公文惯用“作出”，宜统一写法",
+      "suggestion": "将“做出”改为“作出”",
+      "basis": "《现代汉语规范词典》；references/_shared/rules/normative-terms.md 第一部分",
+      "doc_types": [],
+      "exempt_doc_types": [],
+      "skip_in_quotes": true,
+      "fixes": [
+        [
+          "做出",
+          "作出"
+        ]
+      ],
+      "hit_examples": [
+        "会议做出了重要决定，并对下一步工作做出部署。",
+        "为地方经济发展做出积极贡献。"
+      ],
+      "miss_examples": [
+        "会议作出重要决定，并对下一步工作作出部署。",
+        "全镇干部做出了一批看得见的实事成绩。"
+      ]
+    },
+    {
+      "id": "TRM-004",
+      "check": "term",
+      "category": "规范用词",
+      "gate": "文字关",
+      "level": "P1",
+      "pattern": "(?:招聘|招领|寻物|寻人|征稿|征集|更正|迁址|声明|遗失|通告|公告)启示",
+      "message": "“启示”与“启事”误用：公开声明、招聘、征集、更正等文书应用“启事”",
+      "suggestion": "将“启示”改为“启事”",
+      "basis": "《现代汉语词典》；references/_shared/rules/normative-terms.md 第一部分",
+      "doc_types": [],
+      "exempt_doc_types": [],
+      "skip_in_quotes": true,
+      "fixes": [
+        [
+          "启示",
+          "启事"
+        ]
+      ],
+      "hit_examples": [
+        "在单位官网发布公开招聘启示。",
+        "刊登办公地址迁址启示。"
+      ],
+      "miss_examples": [
+        "在单位官网发布公开招聘启事。",
+        "这次事故给我们带来深刻启示。"
+      ]
+    },
+    {
+      "id": "TRM-005",
+      "check": "term",
+      "category": "规范用词",
+      "gate": "文字关",
+      "level": "P1",
+      "pattern": "度过了?(?:这?一)?(?:难关|危机|险情|汛期|艰难时期|困难时期|低谷)",
+      "message": "“度过”与“渡过”误用：通过难关、危机、汛期等应用“渡过”",
+      "suggestion": "将“度过”改为“渡过”",
+      "basis": "《现代汉语规范词典》；references/_shared/rules/normative-terms.md 第一部分",
+      "doc_types": [],
+      "exempt_doc_types": [],
+      "skip_in_quotes": true,
+      "fixes": [
+        [
+          "度过",
+          "渡过"
+        ]
+      ],
+      "hit_examples": [
+        "帮助受灾企业度过难关。",
+        "确保群众安全度过汛期。"
+      ],
+      "miss_examples": [
+        "帮助受灾企业渡过难关。",
+        "确保群众平安度过春节假期。"
+      ]
+    },
+    {
+      "id": "TRM-006",
+      "check": "term",
+      "category": "规范用词",
+      "gate": "文字关",
+      "level": "P2",
+      "pattern": "(?:职责|权责|政策|纪律|法律|思想|是非|公私|罪与非罪|划清)界线",
+      "message": "“界线”与“界限”误用：职责、政策、纪律等抽象分界应用“界限”",
+      "suggestion": "将“界线”改为“界限”",
+      "basis": "《现代汉语规范词典》；references/_shared/rules/normative-terms.md 第一部分",
+      "doc_types": [],
+      "exempt_doc_types": [],
+      "skip_in_quotes": true,
+      "fixes": [
+        [
+          "界线",
+          "界限"
+        ]
+      ],
+      "hit_examples": [
+        "进一步明确部门职责界线。",
+        "严守公私界线和纪律界线。"
+      ],
+      "miss_examples": [
+        "进一步明确部门职责界限。",
+        "两县行政区域界线勘定工作已完成。"
+      ]
+    },
+    {
+      "id": "TRM-007",
+      "check": "term",
+      "category": "规范用词",
+      "gate": "文字关",
+      "level": "P1",
+      "pattern": "(?:群众|居民|家长|患者|企业|基层|职工|师生|代表|委员|多次|普遍|集中|强烈|如实|及时|向上级)反应(?:问题|情况|诉求|意见|线索|困难)",
+      "message": "“反应”与“反映”误用：向上级报告情况、转达意见诉求应用“反映”",
+      "suggestion": "将“反应”改为“反映”",
+      "basis": "《现代汉语词典》；references/_shared/rules/normative-terms.md 第一部分",
+      "doc_types": [],
+      "exempt_doc_types": [],
+      "skip_in_quotes": true,
+      "fixes": [
+        [
+          "反应",
+          "反映"
+        ]
+      ],
+      "hit_examples": [
+        "针对群众反应问题，立即开展核查。",
+        "如实反应情况，不得隐瞒。"
+      ],
+      "miss_examples": [
+        "针对群众反映问题，立即开展核查。",
+        "加强药品不良反应监测报告。"
+      ]
+    },
+    {
+      "id": "TRM-008",
+      "check": "term",
+      "category": "规范用词",
+      "gate": "文字关",
+      "level": "P1",
+      "pattern": "法制(?:政府|社会|国家|思维|方式|轨道|化营商环境|环境|保障|护航)",
+      "message": "“法制”与“法治”误用：依法治理、法治政府、法治化营商环境等应用“法治”",
+      "suggestion": "将“法制”改为“法治”（指法律制度或法制审核机构名称的除外）",
+      "basis": "《现代汉语规范词典》；references/_shared/rules/normative-terms.md 第一部分",
+      "doc_types": [],
+      "exempt_doc_types": [],
+      "skip_in_quotes": true,
+      "fixes": [
+        [
+          "法制",
+          "法治"
+        ]
+      ],
+      "hit_examples": [
+        "持续推进法制政府建设，营造法制化营商环境。",
+        "善于运用法制思维和法制方式破解难题。"
+      ],
+      "miss_examples": [
+        "持续推进法治政府建设，营造法治化营商环境。",
+        "严格落实重大行政决策法制审核制度。"
+      ]
+    },
+    {
+      "id": "TRM-009",
+      "check": "term",
+      "category": "规范用词",
+      "gate": "文字关",
+      "level": "P1",
+      "pattern": "(?:行使|规范|制约|监督|下放)(?:行政|法定|公)?权利|(?:保障|维护|侵害|侵犯)(?:群众|公民|人民|合法|正当|基本|职工|学生|患者)权力",
+      "message": "“权力”与“权利”疑似混用：公职职权用“权力”，公民或法人法定权益用“权利”",
+      "suggestion": "核对语境，职权改用“权力”，法定权益改用“权利”",
+      "basis": "《现代汉语规范词典》；references/_shared/rules/normative-terms.md 第一部分",
+      "doc_types": [],
+      "exempt_doc_types": [],
+      "skip_in_quotes": true,
+      "hit_examples": [
+        "依法规范行政权利运行。",
+        "切实保障群众权力不受侵害。"
+      ],
+      "miss_examples": [
+        "依法规范行政权力运行。",
+        "切实保障群众合法权利不受侵害。"
+      ]
+    },
+    {
+      "id": "TRM-010",
+      "check": "term",
+      "category": "规范用词",
+      "gate": "文字关",
+      "level": "P1",
+      "pattern": "必须品|必需(?:坚持|落实|做到|严格|加强|按照|履行|完成|确保|遵守|执行|报批|整改|停止|经由|经过)",
+      "message": "“必须”与“必需”误用：副词表强制要求用“必须”，表不可缺少用“必需”（如必需品）",
+      "suggestion": "按词性改为“必需品”或“必须”",
+      "basis": "《现代汉语词典》；references/_shared/rules/normative-terms.md 第一部分",
+      "doc_types": [],
+      "exempt_doc_types": [],
+      "skip_in_quotes": true,
+      "fixes": [
+        [
+          "必须品",
+          "必需品"
+        ],
+        [
+          "必需",
+          "必须"
+        ]
+      ],
+      "hit_examples": [
+        "保障汛期群众生活必须品供应。",
+        "各单位必需严格落实值班值守制度。"
+      ],
+      "miss_examples": [
+        "保障汛期群众生活必需品供应。",
+        "各单位必须严格落实值班值守制度。"
+      ]
+    },
+    {
+      "id": "TRM-011",
+      "check": "term",
+      "category": "规范用词",
+      "gate": "政治关",
+      "level": "P1",
+      "pattern": "老少边穷(?:地区)?",
+      "message": "疑似已停用的提法（只标不换）",
+      "suggestion": "请对照最新中央文件原文确认规范表述",
+      "basis": "tifa-risk.md 第三部分（一）；共产党员网 2021-04-17 转载《秘书工作》文章",
+      "doc_types": [],
+      "exempt_doc_types": [],
+      "skip_in_quotes": true,
+      "hit_examples": [
+        "加大对老少边穷地区的帮扶力度。"
+      ],
+      "miss_examples": [
+        "加大对欠发达地区的帮扶力度。"
+      ]
+    },
+    {
+      "id": "TRM-012",
+      "check": "term",
+      "category": "规范用词",
+      "gate": "政治关",
+      "level": "P1",
+      "pattern": "(?<!原)(?:国土资源部(?!门)|环境保护部(?!门)|农业部(?!门)|国家卫生和计划生育委员会|卫计委|中国银行保险监督管理委员会|银保监会|国家工商行政管理总局|国家安全生产监督管理总局|国家食品药品监督管理总局|国家质量监督检验检疫总局|文化部(?!门)|国家旅游局|国土局|环保局|安监局|工商局|质监局|食药监局)",
+      "message": "疑似机构改革前的机构旧称",
+      "suggestion": "请核对现行机构名称（地方机构以本地“三定”为准）；回顾改革前历史事项的保留或冠“原”字",
+      "basis": "2018年、2023年《国务院机构改革方案》；references/_shared/rules/normative-terms.md 第三部分",
+      "doc_types": [],
+      "exempt_doc_types": [],
+      "skip_in_quotes": true,
+      "skip_line": "不再保留|基础上组建|机构改革前",
+      "hit_examples": [
+        "请各单位于月底前报市卫计委和市环保局备案。",
+        "严格落实银保监会和国土资源部有关要求。",
+        "由市安监局、市工商局联合开展专项检查。"
+      ],
+      "miss_examples": [
+        "请各单位于月底前报市卫生健康委和市生态环境局备案。",
+        "原银保监会于2020年印发的相关规定继续参照执行。",
+        "农业部门和文化部门要做好协同配合。"
+      ]
     }
   ],
   "procedural": [

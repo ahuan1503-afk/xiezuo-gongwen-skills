@@ -50,6 +50,9 @@
       "src": "rules/data-expression.md"
     },
     {
+      "src": "rules/normative-terms.md"
+    },
+    {
       "src": "profiles/roles.md"
     },
     {

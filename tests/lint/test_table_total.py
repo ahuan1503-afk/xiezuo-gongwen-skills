@@ -203,7 +203,7 @@ class TableTotalTest(unittest.TestCase):
         self.assertIn("NUM-023", ids(run(text, None, "number")))
         self.assertIn("NUM-023", ids(run(text)))
         self.assertNotIn("NUM-023", ids(run(text, None, "structure,format,style")))
-        self.assertEqual(len(gl.CHECK_ORDER), 12)
+        self.assertEqual(len(gl.CHECK_ORDER), 13)
 
     def test_table_cells_still_checked_by_other_rules_unchanged(self):
         # 表格行本身仍是普通段落，合计核算不影响 summary

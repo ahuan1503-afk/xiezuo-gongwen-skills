@@ -101,7 +101,7 @@ license: PolyForm-Noncommercial-1.0.0
 
 1. 按 `references/review-addon.md` 第一、二部分逐项查（读不到时按卡九和对应卡片）。票数、合计、完成率、增减幅动手算。
 2. 有 Python 时：
-   - `python scripts/gongwen_lint.py 正文.txt --doc-type <类型> --json`：类型按路由表的 lint 列；P0 必改，P1 逐条判断，P2 酌情；【待补】每处报 P2，单独计数，保留并汇总进起草说明一行。ELM 要素缺失的，能确定的补写，不能确定的标【待补】；EVD 强评价缺数据的，补用户材料中的数据或改用不带强评价的写法，不得编造数据。
+   - `python scripts/gongwen_lint.py 正文.txt --doc-type <类型> --json`（有 `.gongwen/禁用词.md` 加 `--banned .gongwen/禁用词.md`）：类型按路由表 lint 列；P0 必改，P1 逐条判断，P2 酌情；【待补】报 P2 单独计数并汇总进起草说明。ELM 缺要素补写或标【待补】；EVD 强评价缺数据补材料数据或改平实，不编造。
    - `python scripts/soe_check.py 正文.txt --type <类型> --json`：类型按路由表的 soe 列；对外材料加 `--external`；改革台账加 `--as-of <统计截止日期>`。比率写成百分数的，SOE-014 报 P1，lint 的 NUM-012 报 P2，同一处按 P1 处理。
    - 经营分析、进展报告、合规报告：`python scripts/fact_diff.py 素材台账.md 正文.txt --ledger`，正文有、台账没有的数字逐条处理。
    - 融合材料有往年稿的：`python scripts/overlap_check.py 正文.txt 往年材料.txt`。

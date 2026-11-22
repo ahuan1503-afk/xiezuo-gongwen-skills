@@ -348,7 +348,7 @@ Agent 环境下，先在对话开头贴出改后全文，同时把同一份正�
 
 # 附录三　公文语境的 AI 腔与白名单
 
-本文件是起草、改稿时都要遵守的精简规则。详细改写方法见 gongwen-humanize，机读规则见 `scripts/style_patterns.json`（`--checks style`，规则号 AI-001～AI-053，白名单 WL-001～WL-019）。
+本文件是起草、改稿时都要遵守的精简规则。详细改写方法见 gongwen-humanize，机读规则见 `scripts/style_patterns.json`（`--checks style`，规则号 AI-001～AI-053，白名单 WL-001～WL-022）。
 
 三条使用原则：
 1. 先查第二部分白名单。属于公文正当写法的，照常使用，改稿时保留。

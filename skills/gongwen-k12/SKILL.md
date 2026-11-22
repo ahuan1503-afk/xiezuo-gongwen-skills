@@ -39,7 +39,7 @@ license: PolyForm-Noncommercial-1.0.0
    - 材料带密级标识，或标注“内部资料”“工作秘密”“不得外传”的，按 guardrails 第一条第2款立即停止，不复述、不摘录。
    - 学生姓名、学号、身份证号、家长手机号、住址，以及成绩排名、家庭经济、家庭结构、心理健康、特殊教育需求、违纪处分：提醒脱敏；输出中学生用“某同学”，评语名单用 S01、S02 编号。
    - Agent 环境收到名单、事实表文件的，先运行 `python scripts/k12_check.py mask <文件> --drop-sensitive`，只读生成的“-脱敏”文件，不开原文件和“-对照表.csv”。脚本把家庭、健康、处分信息所在的整句换成“【已略去：……信息】”，屏幕上报“已略去：家庭信息 N 处”之类一行，起草说明把类型和处数并入保密提示一行。脚本报“没有识别到学生姓名”的，请用户按“姓名：具体表现”每行一人整理或自行脱敏后再发，不打开原文件。
-2. 单位画像：依次查找 `.gongwen/单位画像.md`、`~/.gongwen/单位画像.md`，网页环境看对话开头有没有粘贴画像；再读 `references/_shared/profiles/units/zhongxiaoxue.md` 和 `references/profile-detail.md`。没有画像时按 roles.md 第九节降级，类型默认中小学。
+2. 单位画像：依次查找 `.gongwen/单位画像.md`、`~/.gongwen/单位画像.md`（或粘贴画像），有 `禁用词.md` 同读；再读 `references/_shared/profiles/units/zhongxiaoxue.md` 和 `references/profile-detail.md`。无画像按 roles.md 第九节降级，默认中小学。
 3. 定学段：小学、初中、高中、中职。双减意见和考试结果等级评价、不排名不公布的要求，只约束义务教育阶段；高中、中职按本省规定，见“单位差异”。
 4. 定文书：按“专用文书路由表”确定类型，读对应模板；属“不适用”表的，按上面办法转交。
 5. 定角色模式：按 roles.md 第一节的顺序，本包差异见“角色适配”。面向全体家长、对外发布的材料，叠加严谨模式依据核对。
@@ -130,7 +130,7 @@ license: PolyForm-Noncommercial-1.0.0
 ### 第五步　自检
 
 1. 有 Python 环境时运行：
-   - `python scripts/gongwen_lint.py 正文.txt --doc-type <类型> --json`，类型见路由表。ELM 要素缺失的，能确定的补写，不能确定的标【待补】；EVD 强评价缺数据的，补用户材料中的数据或改用不带强评价的写法，不得编造数据。
+   - `python scripts/gongwen_lint.py 正文.txt --doc-type <类型> --json`（有 `.gongwen/禁用词.md` 加 `--banned .gongwen/禁用词.md`），类型见路由表。ELM 缺要素补写或标【待补】；EVD 强评价缺数据补材料数据或改平实，不编造。
    - 评语：`python scripts/k12_check.py comments 评语.txt --facts <脱敏事实表> [--stage 高中]`；
    - 家长信、家长会讲话：`python scripts/k12_check.py parents 正文.txt [--stage 高中]`；
    - 总结、督导自评：`python scripts/fact_diff.py 素材台账.md 正文.txt --ledger`，列出的“正文中有、台账中没有”的数字逐条处理。

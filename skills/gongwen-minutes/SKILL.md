@@ -40,7 +40,7 @@ license: PolyForm-Noncommercial-1.0.0
    - 出现敏感信号时才在起草说明末尾提示一句，同一会话只说一次；带密级标识或“内部资料”“工作秘密”等标注的，立即停止，不复述、不摘录，告诉用户改用内网模型或删去相关内容后再发。
    - 出现身份证号、手机号、病案号、住院号、学号、住址、患者或学生、信访群众的真实姓名的，提醒脱敏；梳理表、记录、纪要一律改用“张某”“138****0000”，起草说明“保密提示”写明。
    - 涉及人事任免酝酿、纪律处分、未公开经营数据、投标报价的，不停止，在起草说明末尾提醒一次请用户确认允许在当前模型中处理。人事任免按 `references/decisions.md` 第五部分：酝酿中的人选评价、考察反映、个人意见不进任何交付物（含一页纸、梳理表、纪要）。
-2. 单位画像：先读工作目录 `.gongwen/单位画像.md`，没有再找 `~/.gongwen/单位画像.md`；用户贴在对话开头的按粘贴内容处理。再读 `references/_shared/profiles/units/` 下对应单位类型和 `references/units.md` 对应小节。没有画像按 `references/_shared/profiles/roles.md` 第九节。
+2. 单位画像：先读 `.gongwen/单位画像.md`（没有再找 `~/.gongwen/单位画像.md` 或粘贴内容），有 `禁用词.md` 同读；再读 `references/_shared/profiles/units/` 对应类型和 `references/units.md`。无画像按 `references/_shared/profiles/roles.md` 第九节。
 3. 定工作模式：
 
 | 用户的话 | 模式 |
@@ -85,7 +85,7 @@ license: PolyForm-Noncommercial-1.0.0
 
 1. 逐条对账：纪要中每条议定事项都能在梳理表找到“已明确”的结论；正文的数字、日期、文件名都能在记录中找到。有 Python 时运行 `python scripts/fact_diff.py 原始记录.txt 正文.txt --ledger`，把“正文中有、台账中没有”的数字、日期、书名号逐条改为记录中的说法或删去。
 2. 议定事项检查：`python scripts/minutes_check.py 正文.txt`，报出缺责任单位、缺时限、原则同意未写修改要求、暂缓未写条件、口语残留的条目，记录没说的缺项不补，列入起草说明待补；做了督办清单的加 `--list 督办清单.md` 对账，牵头与配合颠倒、时限挂错任务都会报出。
-3. 机检：`python scripts/gongwen_lint.py 正文.txt --doc-type 纪要`（记录、议题材料分别用 `会议记录`、`议题材料`，引擎只提示不报错）。P0 必改，P1 逐条判断，命中公文白名单的保留（`references/_shared/style/ai-tone.md` 第二部分）。ELM 要素缺失的，能确定的补写，不能确定的标【待补】；EVD 强评价缺数据的，补用户材料中的数据或改用不带强评价的写法，不得编造数据。
+3. 机检：`python scripts/gongwen_lint.py 正文.txt --doc-type 纪要`（有 `.gongwen/禁用词.md` 加 `--banned .gongwen/禁用词.md`；记录、议题分别传 `会议记录`、`议题材料`）。P0 必改，P1 逐条判断，白名单保留（`references/_shared/style/ai-tone.md` 第二部分）。ELM 缺要素补写或标【待补】；EVD 强评价缺数据补材料数据或改平实，不编造。
 4. 不能运行脚本的，按本文“自检清单”逐项人工检查，起草说明写“未运行机检，已按人工清单检查”。
 
 ### 第五步　交付
