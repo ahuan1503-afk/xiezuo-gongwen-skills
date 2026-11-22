@@ -56,43 +56,43 @@
         "仿宋": {
           "font": "仿宋_GB2312",
           "usage": "正文、主送机关、三四级标题、署名、成文日期、发文字号、附注、版记、表格",
-          "source": "早期中文版 Windows（如 Windows XP）附带的字体，现行 Windows 不再预装。",
-          "obtain": "先向单位信息中心或办公室索取；也可在互联网搜索字体名“仿宋_GB2312”下载，务必从可靠来源下载。",
+          "source": "早期中文版 Windows（如 Windows XP）附带的字体，现行 Windows 及国产信创系统默认不预装。",
+          "obtain": "优先向单位信息中心或办公室索取内网字库包（信创机可查银河麒麟/统信 UOS 软件商店或 WPS 政务字体包）；若本单位明文规定使用“方正仿宋_GBK”，加 --unit-fonts preset:fangzheng-gbk。",
           "note": "安装后在字体列表中核对名称完全是“仿宋_GB2312”（英文名 FangSong_GB2312），而不是“仿宋”（现行 Windows 自带的“仿宋”是另一款字体，不能代替）。该字体只含 GB 2312 字符集，人名、地名中的生僻字可能缺字，打印前核对。"
         },
         "楷体": {
           "font": "楷体_GB2312",
           "usage": "二级标题、签发人姓名",
-          "source": "早期中文版 Windows（如 Windows XP）附带的字体，现行 Windows 不再预装。",
-          "obtain": "先向单位信息中心或办公室索取；也可在互联网搜索字体名“楷体_GB2312”下载，务必从可靠来源下载。",
+          "source": "早期中文版 Windows（如 Windows XP）附带的字体，现行 Windows 及国产信创系统默认不预装。",
+          "obtain": "优先向单位信息中心或办公室索取内网字库包（信创机可查银河麒麟/统信 UOS 软件商店或 WPS 政务字体包）；若本单位明文规定使用“方正楷体_GBK”，加 --unit-fonts preset:fangzheng-gbk。",
           "note": "安装后在字体列表中核对名称完全是“楷体_GB2312”（英文名 KaiTi_GB2312），而不是“楷体”（现行 Windows 自带的“楷体”是另一款字体，不能代替）。该字体只含 GB 2312 字符集，人名、地名中的生僻字可能缺字，打印前核对。"
         },
         "黑体": {
           "font": "黑体",
           "usage": "一级标题、密级、紧急程度、附件标识、表题",
           "source": "简体中文版 Windows 预装字体（SimHei，文件 simhei.ttf）。",
-          "obtain": "Windows 一般已有；macOS、Linux 默认没有，需自行获取并安装：先向单位信息中心或办公室索取，或从可靠来源下载。",
+          "obtain": "Windows 一般已有；macOS、Linux 及银河麒麟/统信 UOS 默认没有，优先向单位信息中心、WPS 政务字体包或内网字库索取安装。",
           "note": "安装后字体列表中的名称应为“黑体”（英文名 SimHei）。macOS 自带的“黑体-简”（Heiti SC）是另一款字体，不能代替。"
         },
         "小标宋": {
           "font": "方正小标宋简体",
           "usage": "标题、发文机关标志、纪要标志、简报名称",
           "source": "北京北大方正电子有限公司（方正字库）的商业字体。",
-          "obtain": "到方正字库官网 https://www.foundertype.com 搜索“方正小标宋简体”获取。个人非商业使用可免费下载，单位使用需商业授权；很多机关已统一采购，可先问单位信息中心或办公室。",
+          "obtain": "优先问单位信息中心或办公室获取已授权的内网字库包（不少信创政务机已预装）；个人非商业使用也可到方正字库官网 https://www.foundertype.com 搜索“方正小标宋简体”下载，单位使用需商业授权。",
           "note": "安装后字体列表中的名称应为“方正小标宋简体”（英文名 FZXiaoBiaoSong-B05S）。“方正小标宋_GBK”是另一款字体，不能代替。"
         },
         "宋体": {
           "font": "宋体",
           "usage": "页码",
           "source": "简体中文版 Windows 预装字体（SimSun，文件 simsun.ttc）。",
-          "obtain": "Windows 一般已有；macOS、Linux 默认没有，需自行获取并安装：先向单位信息中心或办公室索取，或从可靠来源下载。",
+          "obtain": "Windows 一般已有；macOS、Linux 及银河麒麟/统信 UOS 默认没有，优先向单位信息中心、WPS 政务字体包或内网字库索取安装。",
           "note": "安装后字体列表中的名称应为“宋体”（英文名 SimSun）。macOS 自带的“宋体-简”（Songti SC）是另一款字体，不能代替。"
         }
       },
       "install_methods": {
         "Windows": "右键字体文件，选“为所有用户安装”；或双击字体文件，点“安装”。",
         "macOS": "双击字体文件，在“字体册”窗口点“安装字体”。",
-        "Linux": "把字体文件复制到 ~/.local/share/fonts/，再运行 fc-cache -f。",
+        "Linux": "银河麒麟/统信 UOS/Linux：单用户复制到 ~/.local/share/fonts/，全用户复制到 /usr/share/fonts/custom/（需 sudo），也可在系统“字体管理器”中导入；随后运行 fc-cache -f 刷新字体缓存。",
         "安装后": "重启 Word/WPS，在字体列表中核对名称与标准字体名完全一致；也可运行 python scripts/gw_fonts.py 复查。"
       }
     },

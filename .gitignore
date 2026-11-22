@@ -29,4 +29,7 @@ Thumbs.db
 /交接报告*.md
 
 # 评测用 API Key（只在本机，绝不入库）
-/deepseek.key.local*
+/*.key.local*
+
+# 离线依赖库：wheel 由 tools/build_wheelhouse.py 现下，不入库
+wheelhouse/

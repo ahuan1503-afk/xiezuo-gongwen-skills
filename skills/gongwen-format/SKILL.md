@@ -6,6 +6,8 @@ license: PolyForm-Noncommercial-1.0.0
 
 # 国标排版（gongwen-format）
 
+> 作者：[duyunzhoudyz](https://github.com/duyunzhoudyz) · 免费分发，保留商业授权；转载和再分发请保留本署名。
+
 把公文正文排成符合 GB/T 9704-2012《党政机关公文格式》的 docx，检查、修复已有 docx 格式，把 gongwen-review 的核稿意见写成 Word 批注。参数一律来自 `references/_shared/rules/gbt9704.md`。
 
 ## 适用范围
@@ -162,6 +164,7 @@ python scripts/annotate_docx.py <送审稿.docx> <核稿意见.json> [--author g
 | 文件 | 何时读取 |
 |---|---|
 | `references/manual-setup.md` | 没有 Python 环境，或用户自己在 WPS、Word 中设置 |
+| `references/xinchuang.md` | 银河麒麟、统信 UOS 上用 WPS 排版，Linux 装字体，导出或核验 OFD |
 | `references/meta-fields.md` | 整理版式信息.json；取画像的标志和代字；医院、高校、国企红头差异 |
 | `references/check-items.md` | 解读检查结果、修复报告、批注报告；识别规则 |
 | `references/layouts.md` | 命令（令）、附件另面、联合行文、预印红头纸套打、上行文发文字号、`--keep-text` 的参数、用法和条款依据 |

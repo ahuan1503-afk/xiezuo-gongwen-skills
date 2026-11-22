@@ -169,6 +169,33 @@ def read_font_names(path: Path) -> List[str]:
         return []
 
 
+LINUX_FONT_DIRS = (
+    Path("/usr/share/fonts"),
+    Path("/usr/local/share/fonts"),
+    Path("/usr/share/fonts/wps-office"),
+    Path("/usr/share/fonts/fangzheng"),
+    Path("/usr/share/fonts/winfonts"),
+)
+
+# 信创机常见单位预装方正 GBK 字体族预设（须按本单位制度选用，严格模式不变：缺字体同样报缺失不回退）
+UNIT_FONT_PRESETS: Dict[str, Dict[str, str]] = {
+    "fangzheng-gbk": {
+        "仿宋": "方正仿宋_GBK",
+        "楷体": "方正楷体_GBK",
+        "黑体": "方正黑体_GBK",
+        "小标宋": "方正小标宋_GBK",
+        "宋体": "方正书宋_GBK",
+    },
+    "fangzheng-gbk-stdsong": {
+        "仿宋": "方正仿宋_GBK",
+        "楷体": "方正楷体_GBK",
+        "黑体": "方正黑体_GBK",
+        "小标宋": "方正小标宋_GBK",
+        "宋体": "宋体",
+    },
+}
+
+
 def font_dirs() -> List[Path]:
     system = platform.system()
     dirs: List[Path] = []
@@ -181,20 +208,26 @@ def font_dirs() -> List[Path]:
     elif system == "Darwin":
         dirs += [Path("/Library/Fonts"), Path.home() / "Library" / "Fonts",
                  Path("/System/Library/Fonts"), Path("/System/Library/Fonts/Supplemental")]
+    else:
+        seen: Set[Path] = set()
+        for d in (*LINUX_FONT_DIRS, Path.home() / ".local" / "share" / "fonts", Path.home() / ".fonts"):
+            if d not in seen:
+                seen.add(d)
+                dirs.append(d)
     return dirs
 
 
-def _scan_dirs(dirs: Iterable[Path]) -> Set[str]:
+def _scan_dirs(dirs: Iterable[Path], recursive: bool = False) -> Set[str]:
     found: Set[str] = set()
     for d in dirs:
         if not d.is_dir():
             continue
         try:
-            entries = list(d.iterdir())
+            entries = list(d.rglob("*")) if recursive else list(d.iterdir())
         except OSError:
             continue
         for f in entries:
-            if f.suffix.lower() in FONT_SUFFIXES:
+            if f.is_file() and f.suffix.lower() in FONT_SUFFIXES:
                 found.add(norm(f.stem))
                 for name in read_font_names(f):
                     found.add(norm(name))
@@ -229,7 +262,15 @@ def installed_fonts(refresh: bool = False) -> Tuple[Set[str], str]:
         method = "扫描字体目录\uff1a" + "\u3001".join(str(d) for d in dirs if d.is_dir())
     else:
         names, ok = _scan_fc_list()
-        method = "fc-list" if ok else "未找到 fc-list\uff0c无法检测本机字体"
+        if ok and names:
+            method = "fc-list"
+        else:
+            # 精简版麒麟/统信未装 fontconfig 或 fc-list 为空时，兜底递归扫描系统与 WPS 字体目录
+            dirs = font_dirs()
+            names = _scan_dirs(dirs, recursive=True)
+            existing = [str(d) for d in dirs if d.is_dir()]
+            method = ("扫描 Linux/信创字体目录\uff1a" + "\u3001".join(existing)
+                      if names else "未找到 fc-list 且字体目录为空\uff0c无法检测本机字体")
     _CACHE = (names, method)
     return _CACHE
 
@@ -247,12 +288,13 @@ def load_params(path: Optional[Path] = None) -> dict:
     with open(path or PARAMS_PATH, encoding="utf-8") as fh:
         return json.load(fh)
 
-UNIT_FONTS_HELP = ('按单位规定指定标准字体\uff1a角色=字体名\uff0c逗号分隔\uff0c如 "仿宋=方正仿宋_GBK,小标宋=方正小标宋_GBK"\uff1b'
+UNIT_FONTS_HELP = ('按单位规定指定标准字体\uff1a角色=字体名\uff0c逗号分隔\uff0c如 "仿宋=方正仿宋_GBK,小标宋=方正小标宋_GBK"\uff0c'
+                   '或信创预设 "preset:fangzheng-gbk" / "preset:fangzheng-gbk-stdsong"\uff1b'
                    "角色限 仿宋\u3001楷体\u3001黑体\u3001小标宋\u3001宋体\u3002仅限本单位制度明文规定了字体时使用\uff1b没装国标字体想换个字体不属于单位规定")
 
 
 def parse_unit_fonts(value, params: dict) -> Dict[str, str]:
-    """解析\u201c按单位规定指定标准字体\u201d\uff1a字符串\u201c仿宋=方正仿宋_GBK,小标宋=…\u201d或 {角色: 字体名} 字典\uff0c返回 {角色: 字体名}\u3002
+    """解析\u201c按单位规定指定标准字体\u201d\uff1a字符串\u201c仿宋=方正仿宋_GBK,小标宋=…\u201d、预设\u201cpreset:fangzheng-gbk\u201d或 {角色: 字体名} 字典\u3002
 
     角色只允许 params 中 fonts.standard 的键\uff1b未知角色\u3001空字体名\u3001格式错误\u3001重复角色一律抛 ValueError\uff08中文说明\uff09\u3002
     value 为 None 或空字典返回空字典\uff1b给出了字符串参数却没有任何内容\uff08如空字符串\uff09则报错\u3002
@@ -264,6 +306,13 @@ def parse_unit_fonts(value, params: dict) -> Dict[str, str]:
     if isinstance(value, dict):
         pairs = [(str(k).strip(), "" if v is None else str(v).strip()) for k, v in value.items()]
     elif isinstance(value, str):
+        raw_str = value.strip()
+        if raw_str.lower().startswith("preset:"):
+            preset_key = raw_str.split(":", 1)[1].strip().lower()
+            if preset_key not in UNIT_FONT_PRESETS:
+                avail = _DUN.join(sorted(UNIT_FONT_PRESETS))
+                raise ValueError(f"未知的单位字体预设：“{preset_key}”，可选：{avail}")
+            return dict(UNIT_FONT_PRESETS[preset_key])
         for item in re.split(r"[,\uff0c;\uff1b\u3001\n]+", value):
             if not item.strip():
                 continue

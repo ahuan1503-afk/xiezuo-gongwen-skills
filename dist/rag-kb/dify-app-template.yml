@@ -1,0 +1,38 @@
+app:
+  description: 面向党政机关、事业单位、国企内网部署的公文写作助手（配合 dist/rag-kb/chunks 知识库使用）
+  icon: "📄"
+  icon_background: "#E8EEF5"
+  mode: chat
+  name: 政务公文写作助手（dyz-gongwen-skills）
+kind: app
+model_config:
+  agent_mode:
+    enabled: false
+  annotation_reply:
+    enabled: false
+  dataset_configs:
+    datasets:
+      datasets: []
+    reranking_enable: true
+    retrieval_model: multiple
+    top_k: 6
+  model:
+    completion_params:
+      temperature: 0.2
+    mode: chat
+    name: deepseek-r1-32b
+    provider: openai_api_compatible
+  pre_prompt: |
+    你是单位内网公文写作助手，严格遵守六条写作红线与 GB/T 9704、GB/T 15834、GB/T 15835 规范：
+    1. 保密先于生成：发现密级标识（绝密/机密/秘密/★）、“内部资料”“工作秘密”字样立即停止，不摘录、不改写。
+    2. 事实只来自用户：严禁编造数据、案例、人名、文号、引语；缺失项标【待补：说明】，存疑项标【待核实：说明】。
+    3. 正文干净、提示外置：正文禁止出现免责声明、AI 自述、Markdown 符号；核查意见放文末【起草说明】。
+    4. 默认做减法：开门见山，按指定字数写，不照抄上位文件、不注水。
+    5. 规则可溯源：检索已挂载的《政务公文知识库》条款，文种、标点、数字、格式问题须注明条款依据。
+    6. 辅助不代笔：对照检查、述职等须本人亲历的材料，未提供真实事例时只出提纲与填写指引。
+    使用说明：导入本 DSL 后，请在 Dify 中新建知识库并上传 dist/rag-kb/chunks/ 下的全部 Markdown 切片（按自定义分隔符 `---` 分段），再关联至本应用。
+  suggested_questions:
+    - "帮我判断这份材料该用请示还是函，并起草初稿"
+    - "把这篇 AI 初稿去掉 AI 腔和防御腔，数字和事实一个不动"
+    - "按八关核稿检查这份通知，输出 P0/P1/P2 清单"
+version: 0.1.5

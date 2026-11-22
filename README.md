@@ -6,6 +6,8 @@
 
 **面向机关事业单位和国企文字工作者的公文写作 Skills：防编造、守保密、一键 GB/T 9704 排版。**
 
+作者：[duyunzhoudyz](https://github.com/duyunzhoudyz) · 免费分发，保留商业授权；转载和再分发请保留本署名。
+
 简体中文 · [English](README_EN.md)
 
 如果这个项目帮了你，点一个 Star，方便回来，也让更多有同样需求的人更容易发现它。
@@ -141,6 +143,16 @@ bash install.sh --pack hospital
 > **依赖**：排版和 Excel 图表需要 Python 3.9+ 及 `python-docx`、`openpyxl`（`pip install python-docx openpyxl`，一键脚本会询问是否安装）。没有 Python 时，排版 skill 给出 WPS/Word 手动设置清单。
 >
 > **卸载**：安装命令末尾加 `--uninstall`，确认清单后再加 `--yes`。
+
+### 信创环境与内网（银河麒麟、统信 UOS、WPS，不用 Agent 工具）
+
+单位电脑是国产系统、不能用编程类智能体工具时，按下面用。全部由使用者手动触发，没有后台自动执行。
+
+- **本机工具箱（双击即用）**：双击 `xinchuang/启动工具箱.sh`（或 `.desktop`，Windows 双击 `启动工具箱.bat`），自动用浏览器打开 `http://127.0.0.1:8765`。在一个页面内完成：一键复制内网提示词、直接导入 `.docx`/`.txt` 做涉密检测与双向脱敏还原、八关机检、事实数字核对、字体自检、国标排版（无 `python-docx`/`lxml` 时自动切换内置零依赖轻量排版，龙芯同样可用）、OFD 结构体检。只监听本机回环地址，不联网、不调模型、不落盘，多标签页映射表相互隔离。
+- **精简提示词与一站式合集**：系统提示词框字数受限的，用 `dist/prompts-lite/`（22 份全精修，每份不超过 4000 字）；想在一个对话里走完起草、去腔、核稿的，用 `dist/prompts-bundles/`（4 套一站式合集）。
+- **内网知识库**：单位信息中心搭 Dify、MaxKB、FastGPT、扣子开源版的，导入 `dist/rag-kb/` 的知识切片，Dify 另有 `dify-app-template.yml`（已关闭 Agent 模式）。
+- **免 Python / 免宏排版**：信息中心禁用 WPS 宏且没装 Python 时，直接打开 `xinchuang/templates/` 里的 5 套 GB/T 9704 空白 `.docx` 模板（白头、红头、纪要、签报、综合材料）粘贴文字；允许用宏时可用 `skills/gongwen-format/assets/wps_gongwen_macro.js`；OFD 导出后可在工具箱里直接上传体检或运行 `skills/gongwen-format/scripts/ofd_check.py`；Linux 装字体和 WPS 菜单对照见 `skills/gongwen-format/references/xinchuang.md`。
+- **过审材料、真机验收与离线依赖**：`python tools/build_prompts.py --offline --xinchuang` 生成的离线包里，自动附带《安全自查报告.md》（全部 Python 脚本和 JS 宏的零外联静态审计）、`SHA256SUMS.txt`、`xinchuang/单位信息中心入网评估与部署指引.md`（给办公室主任与信息中心的分级合规及三种部署方案）与 `xinchuang/信创真机验收清单.md`；仓库内另提供 `evals/xinchuang/smoke_eval.py`，可对单位自建或国产大模型（DeepSeek/Qwen 等）一键抽测 8 条公文防线。若提前用 `tools/build_wheelhouse.py` 预下载了各架构 `wheelhouse/`，也会一并收入离线包。
 
 ---
 
@@ -430,5 +442,7 @@ dyz-gongwen-skills 是给机关事业单位、国企文字工作者用的公文�
 ## 许可证
 
 源码公开。个人、学习、教育、研究及其他非商业用途可按许可证免费使用；商业使用需事先取得商业授权，包括商业集成、付费服务、SaaS、企业内部业务流程或商业再分发。
+
+**在 skill 平台上的免费分发**：允许在扣子、腾讯 SkillHub、腾讯 WorkBuddy、小红书 Red Skill、Kimi 技能商店等平台以免费形式上架和分发，前提是保留作者署名 `duyunzhoudyz` 和本仓库链接，不删除本许可证说明，不向使用者收取费用。**付费上架、代售、打包进收费课程或服务，属于商业使用，需事先取得商业授权。**
 
 [PolyForm Noncommercial 1.0.0](LICENSE) — 规则要点整理自公开法规和国家标准，不替代原文。

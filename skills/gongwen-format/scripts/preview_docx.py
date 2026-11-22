@@ -200,7 +200,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         return code
     soffice = args.soffice or find_soffice()
     if not soffice or not (Path(soffice).is_file() or shutil.which(soffice)):
-        print("未找到 LibreOffice\uff08soffice\uff09\uff0c跳过预览\u3002需要目检时可安装 LibreOffice\uff0c或直接用 Word\u3001WPS 打开并打印核对\u3002")
+        print("未找到 LibreOffice\uff08soffice\uff09\uff0c跳过预览\u3002"
+              "国产信创电脑请直接用 WPS Office / 永中 Office 打开核对\uff0c或导出 OFD 后用数科/福昕/WPS 阅读器与打印样张核对\u3002")
         return 0
     out_dir = Path(args.outdir) if args.outdir else src.with_name(src.stem + "-预览")
     try:

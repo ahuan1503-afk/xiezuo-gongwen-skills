@@ -53,12 +53,20 @@ jobs:
       - name: 单元测试
         run: python -m unittest discover -s tests -t .
 
-      - name: 提示词版一致性检查
-        run: python tools/build_prompts.py --check
+      - name: 提示词版与信创产物一致性检查
+        run: python tools/build_prompts.py --check --xinchuang
+
+      - name: 离线交付脚本零外联静态审计
+        run: python tools/security_audit.py --strict
+
+      - name: Shell 脚本语法检查
+        run: |
+          bash -n install.sh
+          bash -n xinchuang/启动工具箱.sh
 
       - name: 构建离线包
         run: |
-          python tools/build_prompts.py --offline
+          python tools/build_prompts.py --offline --xinchuang
           ls -l dist/offline/
 
       - name: 上传到 Release

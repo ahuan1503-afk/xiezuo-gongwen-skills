@@ -6,6 +6,8 @@ license: PolyForm-Noncommercial-1.0.0
 
 # 公文去 AI 味（gongwen-humanize）
 
+> 作者：[duyunzhoudyz](https://github.com/duyunzhoudyz) · 免费分发，保留商业授权；转载和再分发请保留本署名。
+
 AI 起草的公文常带固定腔调：宏大开头、空泛总括、段尾拔高、翻案句、破折号、“赋能”“闭环”扎堆，成效只有“显著提升”没有数据。本 skill 先冻结全部事实，再把命中的句子改到位（不是换几个词），保留正当写法。定位是文风改进，不判断稿件是否 AI 所写，不承诺检测结果。
 
 ## 适用范围

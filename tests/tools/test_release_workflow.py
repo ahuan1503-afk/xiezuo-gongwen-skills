@@ -34,8 +34,8 @@ class ReleaseWorkflowTest(unittest.TestCase):
         self.assertIn("actions/setup-python", used)
 
     def test_runs_tests_before_building(self):
-        steps = ["python -m unittest discover -s tests -t .", "python tools/build_prompts.py --check",
-                 "python tools/build_prompts.py --offline"]
+        steps = ["python -m unittest discover -s tests -t .", "python tools/build_prompts.py --check --xinchuang",
+                 "python tools/security_audit.py --strict", "python tools/build_prompts.py --offline --xinchuang"]
         positions = [self.text.index(s) for s in steps]
         self.assertEqual(positions, sorted(positions))
         self.assertIn("python tools/validate.py", self.text)

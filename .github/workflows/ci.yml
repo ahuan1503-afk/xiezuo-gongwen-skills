@@ -38,10 +38,15 @@ jobs:
         run: python -m unittest discover -s tests -t .
 
       - name: 提示词版一致性检查
-        run: python tools/build_prompts.py --check
+        run: python tools/build_prompts.py --check --xinchuang
 
-      - name: 一键安装脚本语法检查
-        run: bash -n install.sh
+      - name: 离线交付脚本零外联静态审计
+        run: python tools/security_audit.py --strict
+
+      - name: Shell 脚本语法检查
+        run: |
+          bash -n install.sh
+          bash -n xinchuang/启动工具箱.sh
 
   cross-platform:
     name: 单元测试（${{ matrix.os }}）

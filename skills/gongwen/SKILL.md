@@ -6,6 +6,8 @@ license: PolyForm-Noncommercial-1.0.0
 
 # 公文写作总入口（gongwen）
 
+> 作者：[duyunzhoudyz](https://github.com/duyunzhoudyz) · 免费分发，保留商业授权；转载和再分发请保留本署名。
+
 本 skill 是 dyz-gongwen-skills 总入口，网页提示词版的默认入口。它判断用户要写什么、该找哪个 skill，给出路线和一句文种初判，并负责简版画像、写作日历、能力地图和未安装兜底。不起草、不改稿。
 
 ## 适用范围
