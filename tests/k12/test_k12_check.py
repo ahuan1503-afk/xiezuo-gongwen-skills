@@ -449,5 +449,33 @@ class CliTest(K12TestCase):
         self.assertIn("[P0] JZ-001", out)
 
 
+class GeneralCheckTest(K12TestCase):
+
+    def test_general_hits_all_four_redlines(self):
+        text = (
+            "本学期拟按考试成绩分班并公布考试成绩排名。\n"
+            "迎检前突击补齐安全记录和家访记录。\n"
+            "课后服务统一讲授新课，要求学生强制参加。\n"
+            "对低保户张明同学给予了资助。\n"
+        )
+        p = self.write("general_fail.txt", text)
+        code, out, _err = self.run_main("general", str(p), "--json", "--strict")
+        self.assertEqual(code, 1)
+        data = json.loads(out)
+        ids = {i["id"] for i in data["issues"]}
+        self.assertEqual(ids, {"K12-G01", "K12-G02", "K12-G03", "K12-G04"})
+
+    def test_general_clean_and_negation_exempt(self):
+        text = (
+            "本学期严格落实双减要求，不得公布考试成绩排名，严禁课后服务讲授新课或强制参加。\n"
+            "全校为32名困难学生落实资助，严禁补造台账。\n"
+        )
+        p = self.write("general_pass.txt", text)
+        code, out, _err = self.run_main("general", str(p), "--json", "--strict")
+        self.assertEqual(code, 0)
+        data = json.loads(out)
+        self.assertEqual(data["issues"], [])
+
+
 if __name__ == "__main__":
     unittest.main()

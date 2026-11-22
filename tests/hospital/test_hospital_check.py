@@ -158,6 +158,26 @@ class SpecimenTest(HospitalCheckBase):
         self.assertIn("HOS-004", found)
         self.assertTrue(any("未指定 --type" in note for note in result["notes"]))
 
+    def test_extended_six_doc_type_specimens(self) -> None:
+        """补齐其余 6 类医院专用文书的必过/必错标本测试，实现 8 类文书全覆盖。"""
+        cases = [
+            ("等级评审", "必过-等级评审.txt", "必错-等级评审.txt", ("HOS-003", "HOS-008", "HOS-009", "HOS-010", "HOS-016")),
+            ("绩效分析", "必过-绩效分析.txt", "必错-绩效分析.txt", ("HOS-006", "HOS-015", "HOS-021", "HOS-023")),
+            ("述职", "必过-述职.txt", "必错-述职.txt", ("HOS-002", "HOS-003", "HOS-007", "HOS-009")),
+            ("议题", "必过-议题.txt", "必错-议题.txt", ("HOS-004", "HOS-005")),
+            ("行风", "必过-行风.txt", "必错-行风.txt", ("HOS-003", "HOS-017")),
+            ("整改", "必过-整改.txt", "必错-整改.txt", ("HOS-010", "HOS-028")),
+        ]
+        for doc_type, pass_name, fail_name, expected_ids in cases:
+            with self.subTest(doc_type=doc_type, kind="pass"):
+                res_pass = hc.check_file(SPECIMENS / pass_name, doc_type, ruleset=self.ruleset)
+                self.assertEqual(res_pass["issues"], [], f"{pass_name} 不应报错：{res_pass['issues']}")
+            with self.subTest(doc_type=doc_type, kind="fail"):
+                res_fail = hc.check_file(SPECIMENS / fail_name, doc_type, ruleset=self.ruleset)
+                found = ids_of(res_fail)
+                for rid in expected_ids:
+                    self.assertIn(rid, found, f"{fail_name} 应命中 {rid}，实际：{found}")
+
     def test_must_pass_specimen(self) -> None:
         for doc_type in ("质量分析", "绩效分析", None):
             with self.subTest(doc_type=doc_type):

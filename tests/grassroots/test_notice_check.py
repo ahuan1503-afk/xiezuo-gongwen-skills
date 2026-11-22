@@ -849,6 +849,16 @@ class SpecimenTest(NoticeCheckTestCase):
         good = PASS_WUGONGKAI + "\n依据《村民委员会组织法》和《城市居民委员会组织法》规定执行。\n"
         self.assertNotIn("NTC-020", self.ids(self.check(good)))
 
+    def test_internal_material_burden_specimens(self):
+        fail_res = self.check_specimen("必错-迎检材料.txt")
+        self.assertEqual(fail_res["kind"], "内部材料")
+        self.assertIn("NTC-021", self.ids(fail_res, "P1"))
+        self.assertIn("NTC-022", self.ids(fail_res, "P1"))
+        pass_res = self.check_specimen("必过-迎检材料.txt")
+        self.assertEqual(pass_res["kind"], "内部材料")
+        self.assert_clean(pass_res)
+        self.assertEqual(self.ids(pass_res), [])
+
 
 if __name__ == "__main__":
     unittest.main()

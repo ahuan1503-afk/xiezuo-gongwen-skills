@@ -37,6 +37,12 @@ if _TOOLS_DIR not in sys.path:
 
 from sync_shared import REPO_ROOT, make_parser, setup_console  # noqa: E402
 
+_LINT_DIR = str(REPO_ROOT / "shared" / "scripts")
+if _LINT_DIR not in sys.path:
+    sys.path.insert(0, _LINT_DIR)
+
+from gongwen_lint import sentence_lengths  # noqa: E402  切句口径与 gongwen_lint --fingerprint 共用
+
 BASELINE_VERSION = "1.0.0"
 DEFAULT_OUT_REL = "shared/style/baseline.json"
 DEFAULT_PATTERNS_REL = "shared/scripts/style_patterns.json"
@@ -138,20 +144,9 @@ def count_chars(paras: Sequence[str]) -> int:
 
 def split_sentences(paras: Sequence[str]) -> List[int]:
     """按句号、问号、叹号、分号切分，返回每句的字数（不含句末标点）。
-    不含句末标点的自然段（标题、署名行）不计；含句末标点的自然段末尾的残句不足 8 字不计。"""
-    lengths: List[int] = []
-    for p in paras:
-        if not BODY_END_RE.search(p):
-            continue
-        parts = re.split(r"[。？！；]", p)
-        for i, seg in enumerate(parts):
-            n = len(re.sub(r"\s+", "", seg))
-            if n == 0:
-                continue
-            if i == len(parts) - 1 and n < 8:  # 末尾没有标点收尾的残句
-                continue
-            lengths.append(n)
-    return lengths
+    不含句末标点的自然段（标题、署名行）不计；含句末标点的自然段末尾的残句不足 8 字不计。
+    实现在 gongwen_lint.sentence_lengths，--fingerprint 的均句长与基线同口径。"""
+    return sentence_lengths(paras)
 
 
 def heading_level(para: str) -> int:
@@ -332,6 +327,12 @@ class StylePat:
         self.doc_types = tuple(item.get("doc_types") or ())
         self.exempt = tuple(item.get("exempt_doc_types") or ())
         self.exclude = tuple(re.compile(p) for p in (item.get("exclude") or ()))
+        self.density_by_type = {str(k): float(v) for k, v in (item.get("density_by_doc_type") or {}).items()
+                                if not str(k).startswith("_")}
+
+    def density_for(self, lint_type: str) -> Optional[float]:
+        """与 gongwen_lint.StylePattern.density_for 一致：按文种取阈值，未列出的用 density_per_1000。"""
+        return self.density_by_type.get(lint_type, self.density)
 
     def applies(self, lint_type: str) -> bool:
         if self.doc_types and lint_type not in self.doc_types:
@@ -566,9 +567,10 @@ def aggregate_group(docs: Sequence[Doc], metrics: Sequence[dict], phrase_rows: S
             ("per_1000_p90", round(percentile(per_k, 90), 3)),
             ("per_1000_max", round(max(per_k), 3)),
         ])
-        if pat.density is not None:
-            over = sum(1 for c, v in zip(counts, per_k) if c >= 2 and v > pat.density)
-            entry["threshold"] = pat.density
+        limit = pat.density_for(lint_type)
+        if limit is not None:
+            over = sum(1 for c, v in zip(counts, per_k) if c >= 2 and v > limit)
+            entry["threshold"] = limit
             entry["docs_over_threshold"] = over
             entry["over_threshold_share"] = round(over / n, 3)
         sp[pat.id] = entry
@@ -651,7 +653,8 @@ def build_baseline(docs: List[Doc], meta: dict, patterns_path: Optional[Path]) -
         ])
         if pat.density is not None:
             over = sum(1 for i in applicable
-                       if pattern_all[i][pat.id] >= 2 and pattern_all[i][pat.id] * 1000.0 / max(docs[i].chars, 1) > pat.density)
+                       if pattern_all[i][pat.id] >= 2 and pattern_all[i][pat.id] * 1000.0 / max(docs[i].chars, 1)
+                       > (pat.density_for(LINT_DOC_TYPE.get(docs[i].doc_type, docs[i].doc_type)) or pat.density))
             row["threshold"] = pat.density
             row["docs_over_threshold"] = over
             row["over_threshold_share"] = round(over / n, 3)

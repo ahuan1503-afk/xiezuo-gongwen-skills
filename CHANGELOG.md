@@ -1,5 +1,26 @@
 # 更新日志
 
+## 未发布（v1.3.0 行业包深度升级）
+
+围绕五个行业包（基层、医院、高校、中小学、国企）的全面质量评估，完成三阶段专项升级：
+
+### 阶段一：高危红线加固、v1.2 笔力引擎全量接线与提示词瘦身
+- **高危缺陷修复**：
+  - `gongwen-university`：在 `references/quick-cards.md` 补全高校十二条行业红线速查（堵住网页提示词版缺失学术不端、招生录取、科研经费、师德职称、发文权限、意识形态六条红线的缺口）；在 `SKILL.md` 自检清单补入签报程序表述与会签状态前后一致核查。
+  - `gongwen-k12`：在 `SKILL.md` 审稿模式与自检清单中锁死每条问题（含 P1、P2）必须齐备“位置、问题、依据、修改建议”四栏，并严禁在问题清单中照抄学生姓名。
+  - `gongwen-hospital`：在 `SKILL.md` 强化涉及患者信息、不良事件、医疗纠纷、医保基金、招标采购材料时，无论成稿还是转交均须附保密与密级核查提醒；统一 `quick-cards.md` 核验日期。
+- **v1.2 能力全量同步与接线**：五个行业包全部同步并真实写入 `SKILL.md` 接入 `cognitive-stance.md`、`sentence-clinic.md`、`exemplars.md` 及 `gongwen_lint.py --fingerprint`；为 `gongwen-k12` 补齐 `data-expression.md`、`overlap_check.py`、`md2xlsx.py`，为 `gongwen-grassroots` 补齐 `overlap_check.py`；基层/中小学/高校三包补入 1000 字内轻快件直出与单文件 HTML 轻排版指引。
+- **提示词版瘦身**：消除重复表述，五包 `dist/prompts/` 全部控制在 28,380～28,846 字，留出 154～620 字安全余量。
+
+### 阶段二：专用机检全覆盖与本机工具箱一键集成
+- **高校专用文书机检**：新增数据驱动规则引擎 `skills/gongwen-university/scripts/university_rules.json` 与 `university_check.py`（11 条规则覆盖申报书以外的 6 类高校专用文书），新增 `tests/university/test_university_check.py`。
+- **医院标本测试补齐**：在 `tests/hospital/specimens/` 补齐等级评审、绩效分析、科主任述职、上会议题、行风自查、院感整改 6 类共 12 份必过/必错标本，实现 8 类文书标本测试全覆盖。
+- **基层与中小学机检扩展**：`notice_check.py` 新增 `内部材料` 类型及 `NTC-021`（留痕当成效）、`NTC-022`（向村社区转嫁责任/加码）与迎检标本；`k12_check.py` 新增 `general` 子命令覆盖学期计划总结、督导自评、课后服务方案、安全/教研记录。
+- **本机工具箱行业专检（`xinchuang/local_toolbox.py`）**：新增「⑨ 行业专检（右框）」面板与 `/api/industry_check` 接口，以零外调、进程内模块加载方式支持 7 档行业专检（通过信创安全审计 `security_audit.py`），新增 `tests/tools/test_local_toolbox_industry.py`。
+
+### 阶段三：行业包端到端示范样本
+- 新增三套行业端到端示例并更新 `examples/README.md`：`examples/D-中小学评语本地脱敏与还原/`、`examples/E-高校活页匿名形式审查/`、`examples/F-国企三重一大议题与专检/`，所有机检报告均由现行脚本实跑生成。
+
 ## 未发布（v1.2.0 升级）
 
 围绕一线用户反馈（“简单通知流程过长、HTML 也能搞定”）与同类高星项目对标（补强综合长文笔力与文风指纹），完成全链路四阶段升级：

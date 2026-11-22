@@ -15,8 +15,9 @@
 - --evidence-allow：评价词白名单。EVD 类检查（评价词与证据强度匹配）对其中的词不再报告；固定短语白名单在 lint_rules.json 的 evidence.whitelist。
 - --baseline：对已识别文种，把篇幅、一级标题数、“一是”组数、顿号密度与公开公文语料基线（references/_shared/style/baseline.json，
   仓库内为 shared/style/baseline.json）比较，偏离 P10～P90 区间的报 P2 提示（BSL-001～004），只提示不判错；找不到基线文件时跳过并提示。
-- --fingerprint：文风指纹体检（零外部依赖，全口径适用）：测平均句长与长短句比例（FGP-001）、强制/要求/建议三档力度词配额（剔除引号内与“不得不”，FGP-002）、
-  一级段落字数重心分布（FGP-003）、文体族与层级硬错位（千字信息硬塞多一级标题/讲话稿过多三级标题，FGP-004）、半角直引号混用（FGP-005）。
+- --fingerprint：文风指纹体检（零外部依赖，均为 P2，只输出 --checks 包含的类别）：平均句长与长短句比例（FGP-001，切句口径与语料基线一致，
+  有基线时按同文种 P10～P90 放宽判断）、强制词密度（FGP-002，与 DEF-028 共用词表和按文种阈值，DEF-028 已报告时不重复）、
+  一级段落字数重心分布（FGP-003）、文体族与层级错位（千字信息多一级标题、讲话类过多三级标题，FGP-004）；半角直引号由 PUN-021 报告。
 - 要素完整性（ELM-001～007，归 format 类）：按文种查标题、主送、结语、落款、成文日期、附件说明与正文引用、纪要出席列席；
   【待补：…】占位视为作者已注意到，报 P2。评价证据（EVD-001～003，归 style 类）：强评价（显著、大幅……）同句或相邻句无数字、对比报 P1，
   中评价无任何事实报 P2；只查回顾性文书（总结、报告、通报等），计划、方案、讲话稿不查。
@@ -29,7 +30,7 @@ import json
 import os
 import re
 import sys
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import date
 from decimal import Decimal
 from pathlib import Path
@@ -315,6 +316,13 @@ class StylePattern:
     doc_types: Tuple[str, ...]
     exempt_doc_types: Tuple[str, ...]
     exclude: Tuple[Pattern[str], ...] = ()
+    density_by_doc_type: Dict[str, float] = field(default_factory=dict)
+
+    def density_for(self, doc_type: str) -> Optional[float]:
+        """按文种取密度阈值：density_by_doc_type 有该文种用它，否则用 density_per_1000。"""
+        if doc_type in self.density_by_doc_type:
+            return self.density_by_doc_type[doc_type]
+        return self.density
 
 
 @dataclass
@@ -864,6 +872,8 @@ class Linter:
         self.proc_meta: Dict[str, Dict[str, Any]] = {}
         self.patterns: List[StylePattern] = []
         self.whitelist: List[Tuple[str, Pattern[str]]] = []
+        self.modal_require: Pattern[str] = re.compile(_FGP_DEFAULT_REQUIRE)  # 文风指纹“要求档”统计
+        self.modal_suggest: Pattern[str] = re.compile(_FGP_DEFAULT_SUGGEST)  # 文风指纹“建议档”统计
         self.evidence: Dict[str, Any] = {}          # 评价词分级表（lint_rules.json 的 evidence 段）
         self.evidence_allow: Set[str] = set()      # 本次检查的评价词白名单（--evidence-allow）
         self._load_rules(rules_path or DEFAULT_RULES)
@@ -956,9 +966,19 @@ class Linter:
                     doc_types=tuple(item.get("doc_types") or ()),
                     exempt_doc_types=tuple(item.get("exempt_doc_types") or ()),
                     exclude=tuple(_compile(p) for p in item.get("exclude") or ()),
+                    density_by_doc_type={str(k): float(v) for k, v in (item.get("density_by_doc_type") or {}).items()
+                                         if not str(k).startswith("_")},
                 ))
             except (KeyError, re.error, TypeError, ValueError) as exc:
                 self.warnings.append(f"词表规则 {item.get('id', '?')} 无效，已跳过：{exc}")
+        modal = data.get("modal_words") or {}
+        try:
+            self.modal_require = _compile(modal.get("require") or _FGP_DEFAULT_REQUIRE)
+            self.modal_suggest = _compile(modal.get("suggest") or _FGP_DEFAULT_SUGGEST)
+        except re.error as exc:
+            self.warnings.append(f"力度词表 modal_words 无效，已用内置词表：{exc}")
+            self.modal_require = _compile(_FGP_DEFAULT_REQUIRE)
+            self.modal_suggest = _compile(_FGP_DEFAULT_SUGGEST)
         for item in data.get("whitelist", []):
             try:
                 self.whitelist.append((item["id"], _compile(item["pattern"])))
@@ -1176,15 +1196,16 @@ class Linter:
             check_name = pat.category or CHECK_NAMES.get(pat.group, pat.group)
             basis_file = "ai-tone.md" if pat.group == "style" else "defensive.md"
             basis = f"文风词表 {pat.id}（{pat.category}），见 references/_shared/style/{basis_file}"
-            if pat.density is not None:
+            limit = pat.density_for(doc_type)
+            if limit is not None:
                 per_k = len(hits) * 1000.0 / total
-                if len(hits) < 2 or per_k <= pat.density:
+                if len(hits) < 2 or per_k <= limit:
                     continue
                 para, start, end = hits[0]
                 issues.append(Issue(
                     id=pat.id, level=pat.level, check=pat.group, category=check_name, gate="文风关",
                     line=para.line, excerpt=clip(para.text[start:end], 80),
-                    message=f"{pat.message}（全文 {len(hits)} 处，每千字 {per_k:.1f} 处，阈值 {pat.density:g}）",
+                    message=f"{pat.message}（全文 {len(hits)} 处，每千字 {per_k:.1f} 处，阈值 {limit:g}）",
                     suggestion=pat.suggestion, basis=basis,
                     context=context_of(para.text, start, end), start=start, end=end,
                     count=len(hits), para_index=para.index,
@@ -2576,11 +2597,12 @@ def load_banned(path: Path) -> List[BannedTerm]:
                 # 表头：按列名定位各列，找不到词语列时取第一列
                 def find(pattern: str) -> Optional[int]:
                     return next((i for i, c in enumerate(cells) if re.search(pattern, c)), None)
-                term_col = find(r"误写|旧称|不规范")
+                term_col = find(r"^(?:常见)?(?:误写|旧称|不规范)")
                 if term_col is None:
                     term_col = find(r"词|表述|用语|提法")
                 cols = {"term": term_col if term_col is not None else 0, "level": find(r"级别|等级|类别|类型"),
-                        "reason": find(r"原因|理由|来源|依据"), "suggestion": find(r"替换|建议|改为|替代|(?<!不)规范|统一"),
+                        "reason": find(r"原因|理由|来源|依据"),
+                        "suggestion": find(r"替换|建议|改为|替代|^(?:规范|统一|现行)(?:写法|表述|名称|用语|提法)"),
                         "scope": find(r"适用|范围")}
                 continue
             spec = cols or {"term": 0, "level": None, "reason": None, "suggestion": None, "scope": None}
@@ -2780,175 +2802,221 @@ def baseline_hints(doc: Document, doc_type: str, ref: BaselineRef) -> Tuple[List
     return issues, notes, info
 
 
-# ---- 文风指纹体检（--fingerprint，FGP-001～005，零外部依赖）----
-_FGP_QUOTE_STRIP_RE = re.compile(r"[“\"][^”\"]{0,24}[”\"]")
-_FGP_SENT_SPLIT_RE = re.compile(r"[。！？；]")
-_FGP_FORCE_WORDS = ("必须", "应当", "不得", "严禁")
-_FGP_REQ_WORDS = ("要", "切实", "确保", "务必")
-_FGP_SUG_WORDS = ("建议", "可以", "鼓励", "支持")
-# 强制词整篇参考上限（偏保守，只拦明显通货膨胀）
-_FGP_FORCE_CAP = {
-    "意见": 6, "实施方案": 6, "贯彻落实方案": 6, "整改方案": 6, "决定": 6, "通告": 6,
-    "通知": 5, "讲话稿": 5, "调研报告": 4, "总结": 3, "汇报材料": 3,
-    "经验材料": 3, "信息": 2, "简报": 2, "新闻稿": 2,
-}
+# ---- 文风指纹体检（--fingerprint，FGP-001～004，零外部依赖）----
+# 切句口径与 tools/build_baseline.py 共用 sentence_lengths()，均句长才能和 baseline.json 直接比较。
+SENT_BODY_END_RE = re.compile(r"[。？！；]")
+SENT_SPLIT_RE = re.compile(r"[。？！；]")
+# 语料没有覆盖的文种用固定参考区间；有基线时取 min(P10, 下限) ～ max(P90, 上限)，只拦明显偏离
+_FGP_SENT_FLOOR = 30.0
+_FGP_SENT_FLOOR_SPEECH = 26.0
+_FGP_SENT_CEIL = 75.0
+_FGP_SPEECH_TYPES = ("讲话稿", "党课讲稿", "研讨发言")
 _FGP_SINGLE_HEAVY_TYPES = {"意见", "实施方案", "贯彻落实方案", "整改方案", "经验材料"}
 _FGP_BALANCED_TYPES = {"调研报告", "讲话稿", "总结"}
 _FGP_SHORT_FAMILY_TYPES = {"信息", "简报", "新闻稿"}
+# 强制词与 DEF-028 共用一份词表和按文种的密度阈值（style_patterns.json），这里只引用规则号
+FORCE_RULE_ID = "DEF-028"
+_FGP_DEFAULT_REQUIRE = r"切实|确保|抓好|(?<![重主需必只紧首纲提摘概简将想])要(?![求点素件闻害领务紧么是])"
+_FGP_DEFAULT_SUGGEST = r"建议|鼓励|(?<!不)可以|支持"
+_BASELINE_CACHE: Dict[str, BaselineRef] = {}
 
 
-def fingerprint_hints(doc: Document, doc_type: str) -> Tuple[List[Issue], List[str], Dict[str, Any]]:
-    """计算文风指纹指标并给出分层提示（硬错位报 P1，节奏/配额/重心报 P2，有理由可不改）。"""
-    texts = [p.text for p in doc.paras]
+def sentence_lengths(paras: Sequence[str]) -> List[int]:
+    """按句号、问号、叹号、分号切分，返回每句的字数（不含句末标点和空白）。
+    不含句末标点的自然段（标题、主送、署名、日期）不计；含句末标点的自然段末尾的残句不足 8 字不计。
+    tools/build_baseline.py 计算语料基线时调用同一函数。"""
+    lengths: List[int] = []
+    for p in paras:
+        if not SENT_BODY_END_RE.search(p):
+            continue
+        parts = SENT_SPLIT_RE.split(p)
+        for i, seg in enumerate(parts):
+            n = len(re.sub(r"\s+", "", seg))
+            if n == 0:
+                continue
+            if i == len(parts) - 1 and n < 8:  # 末尾没有标点收尾的残句
+                continue
+            lengths.append(n)
+    return lengths
+
+
+def _auto_baseline() -> BaselineRef:
+    if "auto" not in _BASELINE_CACHE:
+        _BASELINE_CACHE["auto"] = load_baseline("auto")
+    return _BASELINE_CACHE["auto"]
+
+
+def _fgp_sent_band(doc: Document, doc_type: str, ref: Optional[BaselineRef]) -> Tuple[float, float, str]:
+    floor = _FGP_SENT_FLOOR_SPEECH if doc_type in _FGP_SPEECH_TYPES else _FGP_SENT_FLOOR
+    if ref is not None and ref.data is not None:
+        group_name, _why = _baseline_group(doc, doc_type)
+        group = ref.data["groups"].get(group_name) if group_name else None
+        st = (group or {}).get("sent_len_mean") or {}
+        if st.get("n") and st.get("p10") is not None and st.get("p90") is not None:
+            lo = min(float(st["p10"]), floor)
+            hi = max(float(st["p90"]), _FGP_SENT_CEIL)
+            return lo, hi, f"同文种语料（{group_name}，{group.get('n', '?')} 篇）P10～P90 为 {st['p10']:g}～{st['p90']:g} 字"
+    return floor, _FGP_SENT_CEIL, "语料基线未覆盖该文种，按固定参考区间"
+
+
+def fingerprint_hints(doc: Document, doc_type: str, linter: Linter,
+                      baseline: Optional[BaselineRef] = None) -> Tuple[List[Issue], List[str], Dict[str, Any]]:
+    """计算文风指纹指标并给出 P2 提示（只提示不判错，有理由可不改）。"""
+    skip: Set[int] = set(doc.head) | set(doc.title)
+    if doc.subtitle is not None:
+        skip.add(doc.subtitle)
+    if doc.banji_start is not None:
+        skip |= set(range(doc.banji_start, len(doc.paras)))
+    body = [p for p in doc.paras if p.index not in skip and not p.in_table]
     chars = doc.char_count
-    plain = "\n".join(texts)
 
-    # 1. 句长与长短句比例（跳过标题、极短行和落款日期）
-    sents: List[str] = []
-    for idx, p in enumerate(doc.paras):
-        if doc.title and idx in doc.title:
-            continue
-        t = p.text.strip()
-        if not t or (heading_of(t) and len(t) <= 30):
-            continue
-        for seg in _FGP_SENT_SPLIT_RE.split(t):
-            s = seg.strip()
-            if len(s) >= 4:
-                sents.append(s)
-    avg_sent = round(sum(len(s) for s in sents) / len(sents), 1) if sents else 0.0
-    short_ratio = round(100.0 * sum(1 for s in sents if len(s) <= 15) / len(sents), 1) if sents else 0.0
-    long_ratio = round(100.0 * sum(1 for s in sents if len(s) >= 50) / len(sents), 1) if sents else 0.0
+    # 1. 句长（与基线同口径）
+    sents = sentence_lengths([p.text for p in body])
+    avg_sent = round(sum(sents) / len(sents), 1) if sents else 0.0
+    short_ratio = round(100.0 * sum(1 for n in sents if n <= 15) / len(sents), 1) if sents else 0.0
+    long_ratio = round(100.0 * sum(1 for n in sents if n >= 50) / len(sents), 1) if sents else 0.0
 
-    # 2. 力度词配额（剔除引号内短概念、“不得不”与法定提法“三管三必须”）
-    depunct = _FGP_QUOTE_STRIP_RE.sub("", plain)
-    force_text = depunct.replace("不得不", "＃＃＃").replace("三管三必须", "＃＃＃＃＃")
-    force_cnt = sum(force_text.count(w) for w in _FGP_FORCE_WORDS)
-    req_cnt = sum(depunct.count(w) for w in _FGP_REQ_WORDS)
-    sug_cnt = sum(depunct.count(w) for w in _FGP_SUG_WORDS)
+    # 2. 力度词：强制档直接用 DEF-028 的词表、排除项和白名单（与机检同口径）
+    force_pat = next((p for p in linter.patterns if p.id == FORCE_RULE_ID), None)
+    force_hits = linter.style_hits(doc, force_pat) if force_pat else []
+    force_cnt = len(force_hits)
+    force_per_k = round(force_cnt * 1000.0 / chars, 2) if chars else 0.0
+    force_limit = force_pat.density_for(doc_type) if force_pat else None
+    force_applies = bool(force_pat) and applies_to(doc_type, force_pat.doc_types, force_pat.exempt_doc_types)
+    quote_re = re.compile(r"[“\"][^”\"\n]{0,24}[”\"]")
+    plain = "\n".join(quote_re.sub("", p.text) for p in body)
+    req_cnt = len(linter.modal_require.findall(plain))
+    sug_cnt = len(linter.modal_suggest.findall(plain))
 
-    # 3. 层次标题计数与一级段重心分布
+    # 3. 层次标题计数与一级段重心分布（不含标题、版记）
     h1_cnt = h2_cnt = h3_cnt = 0
+    h1_paras: List[Para] = []
+    h3_paras: List[Para] = []
     sections: List[List[Any]] = []
-    cur_name = "导语"
-    cur_chars = 0
-    for t in texts:
+    cur_name, cur_chars, cur_para = "导语", 0, None
+    for p in body:
+        t = p.text.strip()
         hd = heading_of(t)
         lvl = hd[0] if hd else 0
         if lvl == 1:
             h1_cnt += 1
+            h1_paras.append(p)
             if cur_chars > 0:
-                sections.append([cur_name, cur_chars])
-            cur_name = t.strip()[:18]
-            cur_chars = len(t.strip())
+                sections.append([cur_name, cur_chars, cur_para])
+            cur_name, cur_chars, cur_para = t[:18], nonspace_len(t), p
         else:
             if lvl == 2:
                 h2_cnt += 1
             elif lvl == 3:
                 h3_cnt += 1
-            cur_chars += len(t.strip())
+                h3_paras.append(p)
+            cur_chars += nonspace_len(t)
     if cur_chars > 0:
-        sections.append([cur_name, cur_chars])
+        sections.append([cur_name, cur_chars, cur_para])
     sec_total = sum(s[1] for s in sections) or 1
-    sec_weights = [[name, n, round(100.0 * n / sec_total, 1)] for name, n in sections]
-    h1_weights = [w for w in sec_weights if w[0] != "导语"]
+    sec_weights = [[name, n, round(100.0 * n / sec_total, 1)] for name, n, _p in sections]
+    h1_secs = [(name, n, round(100.0 * n / sec_total, 1), para) for name, n, para in sections if para is not None]
 
-    ascii_quotes = plain.count('"')
+    ascii_quotes = sum(p.text.count('"') for p in body)
 
     issues: List[Issue] = []
-    # FGP-001 平均句长（仅在正文 >= 400 字且句子数 >= 6 时评估）
+    # FGP-001 平均句长（正文 >= 400 字且句子数 >= 6 时评估）
+    lo, hi, band_note = _fgp_sent_band(doc, doc_type, baseline)
     if chars >= 400 and len(sents) >= 6:
-        lo = 26.0 if doc_type in ("讲话稿", "党课讲稿", "研讨发言") else 30.0
-        hi = 75.0
         if avg_sent < lo:
             issues.append(Issue(
                 id="FGP-001", level="P2", check="style", category="文风指纹", gate="文风关", line=0,
                 excerpt=f"平均句长 {avg_sent} 字（短句占比 {short_ratio}%）",
-                message=f"平均句长 {avg_sent} 字，低于常规公文节奏参考下限 {lo:g} 字，读感偏碎（像自媒体短句）",
+                message=f"平均句长 {avg_sent} 字，低于参考下限 {lo:g} 字（{band_note}），读感偏碎",
                 suggestion="可将同一意思的关联短句合并为带并列成分的公文长句（见 references/_shared/style/sentence-clinic.md）；如系有意保留口语或短句发力则无需修改",
-                basis="文风指纹参照 references/_shared/style/baseline.md（仅作参考，不作硬合格线）",
+                basis="文风指纹，切句口径与公开公文语料基线 references/_shared/style/baseline.md 一致（参考，不是合格线）",
             ))
         elif avg_sent > hi:
             issues.append(Issue(
                 id="FGP-001", level="P2", check="style", category="文风指纹", gate="文风关", line=0,
                 excerpt=f"平均句长 {avg_sent} 字（长句占比 {long_ratio}%）",
-                message=f"平均句长 {avg_sent} 字，高于常规参考上限 {hi:g} 字，可能影响阅读与宣讲节奏",
+                message=f"平均句长 {avg_sent} 字，高于参考上限 {hi:g} 字（{band_note}），可能影响阅读与宣讲节奏",
                 suggestion="可在语义完整处适当断句，穿插短句收口；如系条款密集型文件可保留",
-                basis="文风指纹参照 references/_shared/style/baseline.md",
+                basis="文风指纹，切句口径与公开公文语料基线 references/_shared/style/baseline.md 一致（参考，不是合格线）",
             ))
 
-    # FGP-002 强制词稀缺配额
-    cap = _FGP_FORCE_CAP.get(doc_type, 4)
-    if chars >= 150 and force_cnt > cap:
+    # FGP-002 强制词密度（与 DEF-028 同词表、同阈值；DEF-028 已报告时不重复，见 _lint_document）
+    if force_applies and force_limit is not None and force_cnt >= 2 and force_per_k > force_limit:
+        para, start, end = force_hits[0]
         issues.append(Issue(
-            id="FGP-002", level="P2", check="defensive", category="文风指纹", gate="文风关", line=0,
-            excerpt=f"强制词（必须/应当/不得/严禁）共 {force_cnt} 处",
-            message=f"强制词共 {force_cnt} 处（已排除引号内与“不得不”），超过“{doc_type}”常规配额上限 {cap} 处，堆砌会削弱分量",
+            id="FGP-002", level="P2", check="style", category="文风指纹", gate="文风关", line=para.line,
+            excerpt=clip(para.text[start:end], 80),
+            message=(f"强制词共 {force_cnt} 处、每千字 {force_per_k:g} 处，超过“{doc_type}”参考阈值 {force_limit:g}"
+                     f"（与 {FORCE_RULE_ID} 同口径：已排除引号内短语、“不得不”“舍不得”等），堆砌会削弱分量"),
             suggestion="只把“必须/不得/严禁”留给红线条款，其余改用“要 + 具体动作”“一律取消”“不予”“不能”（见 sentence-clinic.md 第四部分）",
-            basis="文风指纹参照 references/_shared/style/cognitive-stance.md、defensive.md 第六部分",
+            basis="文风词表 DEF-028 与 references/_shared/style/defensive.md 第六部分；按文种阈值依据公开公文语料基线",
+            start=start, end=end, count=force_cnt, para_index=para.index,
         ))
 
     # FGP-003 一级段落重心分布（>= 1200 字且 >= 3 个一级标题时检查）
-    if chars >= 1200 and len(h1_weights) >= 3:
-        max_sec = max(h1_weights, key=lambda x: x[2])
-        if doc_type in _FGP_BALANCED_TYPES and max_sec[2] > 62.0:
+    if chars >= 1200 and len(h1_secs) >= 3:
+        name, _n, share, para = max(h1_secs, key=lambda x: x[2])
+        if doc_type in _FGP_BALANCED_TYPES and share > 62.0:
             issues.append(Issue(
-                id="FGP-003", level="P2", check="structure", category="文风指纹", gate="结构关", line=0,
-                excerpt=f"最大段「{max_sec[0]}」占 {max_sec[2]}%",
-                message=f"“{doc_type}”通常各部分相对均衡，当前「{max_sec[0]}」占比 {max_sec[2]}% 明显偏重",
+                id="FGP-003", level="P2", check="structure", category="文风指纹", gate="结构关", line=para.line,
+                excerpt=f"最大段「{name}」占 {share}%",
+                message=f"“{doc_type}”通常各部分相对均衡，当前「{name}」占比 {share}% 明显偏重",
                 suggestion="核查是否把分析/总结类文稿写成了单段独大的部署方案；如有意突出重点板块可保留",
                 basis="文风指纹参照 references/_shared/style/baseline.md（结构重心对照）",
+                para_index=para.index,
             ))
-        elif doc_type in _FGP_SINGLE_HEAVY_TYPES and max_sec[2] < 28.0 and len(h1_weights) <= 4:
+        elif doc_type in _FGP_SINGLE_HEAVY_TYPES and share < 28.0 and len(h1_secs) <= 4:
             issues.append(Issue(
-                id="FGP-003", level="P2", check="structure", category="文风指纹", gate="结构关", line=0,
-                excerpt=f"最大段「{max_sec[0]}」仅占 {max_sec[2]}%",
-                message=f"“{doc_type}”通常把重心压在任务/做法段，当前各段过于均分（最高仅 {max_sec[2]}%）",
+                id="FGP-003", level="P2", check="structure", category="文风指纹", gate="结构关", line=para.line,
+                excerpt=f"最大段「{name}」仅占 {share}%",
+                message=f"“{doc_type}”通常把重心压在任务/做法段，当前各段过于均分（最高仅 {share}%）",
                 suggestion="可压缩前置意义/背景段，把篇幅集中到重点任务或可复制做法上；如系平铺多任务结构可保留",
                 basis="文风指纹参照 references/_shared/style/baseline.md（结构重心对照）",
+                para_index=para.index,
             ))
 
-    # FGP-004 文体族与层级硬错位（P1）
+    # FGP-004 文体族与层级错位（启发式，P2）
     if doc_type in _FGP_SHORT_FAMILY_TYPES and chars < 1600 and h1_cnt >= 3:
+        para = h1_paras[2]
         issues.append(Issue(
-            id="FGP-004", level="P1", check="structure", category="文风指纹", gate="结构关", line=0,
+            id="FGP-004", level="P2", check="structure", category="文风指纹", gate="结构关", line=para.line,
             excerpt=f"{chars} 字的{doc_type}含 {h1_cnt} 个一级标题",
             message=f"千字级{doc_type}（{chars} 字）使用了 {h1_cnt} 个“一、”式一级标题，易沦为压缩版公文",
-            suggestion="千字级信息/简报/短经验材料建议去掉一级大标题，改用段首动宾提领句分层",
+            suggestion="千字级信息/简报/短经验材料建议去掉一级大标题，改用段首动宾提领句分层；上级有固定模板的照模板",
             basis="文体族结构规律 references/_shared/style/cognitive-stance.md 第五部分",
+            para_index=para.index,
         ))
-    elif doc_type == "讲话稿" and h3_cnt >= 3:
+    elif doc_type in _FGP_SPEECH_TYPES and h3_cnt >= 3:
+        para = h3_paras[2]
         issues.append(Issue(
-            id="FGP-004", level="P1", check="structure", category="文风指纹", gate="结构关", line=0,
-            excerpt=f"讲话稿含 {h3_cnt} 个三级标题（1.）",
-            message=f"讲话稿使用了 {h3_cnt} 个三级标题（1.），层级过深，不利于口头宣讲",
-            suggestion="讲话稿宜控制在两层（一、/（一））以内，段内分层改用“一是……二是……”或口语过渡",
+            id="FGP-004", level="P2", check="structure", category="文风指纹", gate="结构关", line=para.line,
+            excerpt=f"{doc_type}含 {h3_cnt} 个三级标题（1.）",
+            message=f"{doc_type}使用了 {h3_cnt} 个三级标题（1.），层级偏深，不利于口头宣讲",
+            suggestion="讲话类文稿宜控制在两层（一、/（一））以内，段内分层改用“一是……二是……”或口语过渡；印发版需要细目的可保留",
             basis="文体族结构规律 references/_shared/style/baseline.md、exemplars.md",
-        ))
-
-    # FGP-005 半角直引号混用
-    if ascii_quotes >= 2:
-        issues.append(Issue(
-            id="FGP-005", level="P2", check="punct", category="文风指纹", gate="文字关", line=0,
-            excerpt=f'检测到 {ascii_quotes} 个半角直引号 "',
-            message=f'中文正文中出现 {ascii_quotes} 个英文半角直引号（"），应统一为全角弯引号“ ”',
-            suggestion="将成对半角直引号替换为中文弯引号“ ”",
-            basis="GB/T 15834-2011 4.9；references/_shared/style/sentence-clinic.md 第五部分",
+            para_index=para.index,
         ))
 
     fp_info: Dict[str, Any] = {
         "avg_sent_len": avg_sent,
         "short_sent_ratio": short_ratio,
         "long_sent_ratio": long_ratio,
+        "sent_len_band": [round(lo, 1), round(hi, 1)],
         "modals": {"强制": force_cnt, "要求": req_cnt, "建议": sug_cnt},
+        "force_per_1000": force_per_k,
+        "force_limit_per_1000": force_limit if force_applies else None,
         "headings": {"h1": h1_cnt, "h2": h2_cnt, "h3": h3_cnt},
         "sections": sec_weights,
         "ascii_quotes": ascii_quotes,
     }
+    limit_txt = f"，阈值 {force_limit:g}" if force_applies and force_limit is not None else ""
     fp_note = (
-        f"文风指纹：均句长 {avg_sent} 字（短句 {short_ratio}%｜长句 {long_ratio}%），"
-        f"力度词（强制 {force_cnt}｜要求 {req_cnt}｜建议 {sug_cnt}），"
+        f"文风指纹：均句长 {avg_sent} 字（参考 {lo:g}～{hi:g}；短句 {short_ratio}%｜长句 {long_ratio}%），"
+        f"力度词（强制 {force_cnt}，每千字 {force_per_k:g}{limit_txt}｜要求 {req_cnt}｜建议 {sug_cnt}），"
         f"标题层级（一级 {h1_cnt}｜二级 {h2_cnt}｜三级 {h3_cnt}）。"
     )
+    if ascii_quotes:
+        fp_note += f"半角直引号 {ascii_quotes} 个，见 PUN-021。"
     return issues, [fp_note], fp_info
 
 
@@ -3000,7 +3068,12 @@ def _lint_document(doc: Document, doc_type: Optional[str], checks: Optional[str]
         all_notes.extend(bsl_notes)
     fp_info: Optional[Dict[str, Any]] = None
     if fingerprint:
-        fp_issues, fp_notes, fp_info = fingerprint_hints(doc, dtype)
+        fp_ref = baseline if baseline is not None else _auto_baseline()
+        fp_issues, fp_notes, fp_info = fingerprint_hints(doc, dtype, linter, fp_ref)
+        # 只输出本次 --checks 包含的类别；强制词密度与 DEF-028 同口径，DEF-028 已报告时不重复
+        fp_issues = [i for i in fp_issues if i.check in check_list]
+        if any(i.id == FORCE_RULE_ID for i in issues):
+            fp_issues = [i for i in fp_issues if i.id != "FGP-002"]
         if fp_issues:
             issues = sorted(issues + fp_issues, key=lambda x: (LEVEL_RANK.get(x.level, 9), x.line, x.start, x.id))
         all_notes.extend(fp_notes)
@@ -3139,7 +3212,8 @@ def build_parser() -> argparse.ArgumentParser:
                         help="与公开公文语料基线比较篇幅、一级标题数、“一是”组数、顿号密度，偏离 P10～P90 的报 P2 提示（BSL-001～004），"
                              "只提示不判错；不带路径时按脚本相对路径查找，找不到则跳过并提示")
     parser.add_argument("--fingerprint", action="store_true",
-                        help="启用文风指纹体检（FGP-001～005）：均句长与长短句比例、强制/要求/建议三档力度词配额、一级段落重心、文体族硬错位与直引号检查")
+                        help="启用文风指纹体检（FGP-001～004，均为 P2）：均句长（与语料基线同口径）、强制词密度（与 DEF-028 同词表同阈值）、"
+                             "一级段落重心、文体族层级错位；同时输出要求/建议档力度词统计")
     parser.add_argument("-h", "--help", action="help", help="显示帮助并退出")
     return parser
 

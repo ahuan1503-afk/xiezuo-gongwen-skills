@@ -1309,13 +1309,83 @@ def check_parents(path: Path, stage: str = "义务教育") -> dict:
     }
 
 
+GENERAL_RULES = (
+    (
+        "K12-G01", "P0", "P1", "考试排名",
+        re.compile(r"(?:公布|张贴|通报|公示)[^。；，,\n]{0,8}?(?:考试成绩|成绩排名|名次|分数)|按(?:考试)?成绩(?:分班|排座|排名)"),
+        "义务教育阶段不得公布学生考试成绩或按成绩排名、分班",
+        "改为陈述整体教学改进措施与学习习惯变化，删去分数与排名表述",
+        "教基厅函〔2021〕34号；gongwen-k12 references/redlines.md 第二条",
+    ),
+    (
+        "K12-G02", "P0", "P0", "记录真实",
+        re.compile(r"(?:补造|倒签|补写|突击补齐)[^。；，,\n]{0,8}?(?:台账|记录|教研记录|安全记录|家访记录|听课记录)"),
+        "疑似存在补造或倒签迎检台账/活动记录的表述",
+        "严禁补造未开展活动的记录或倒签日期，按实际开展情况如实登记",
+        "gongwen-k12 references/redlines.md 第八条；guardrails 第六条",
+    ),
+    (
+        "K12-G03", "P0", "P1", "课后服务",
+        re.compile(r"课后服务[^。；，,\n]{0,12}?(?:讲授新课|统一讲新课|必须全部参加|强制参加|一律参加)"),
+        "课后服务不得讲授新课，也不得强制或变相强制学生参加",
+        "写明自愿报名原则，课后服务用于作业辅导、阅读、体育、艺术等素质拓展活动",
+        "中办发〔2021〕40号；gongwen-k12 references/redlines.md 第四条",
+    ),
+    (
+        "K12-G04", "P0", "P0", "学生隐私",
+        re.compile(r"(?:低保户|建档立卡|单亲家庭|离异家庭|抑郁症|多动症|违纪处分)[^。；，,\n]{0,10}?(?:同学|学生|[张王李赵刘陈杨黄周吴][某\u4e00-\u9fa5]{1,2})"),
+        "校内计划总结或自评材料中疑似外露学生家庭、健康或处分等敏感隐私",
+        "删去具体学生姓名与敏感背景关联，确需说明整体情况的改用汇总人数",
+        "《未成年人保护法》第四条；gongwen-k12 references/redlines.md 第一条",
+    ),
+)
+
+
+def check_general(path: Path, stage: str = "义务教育") -> dict:
+    """校内综合文书检查（学期计划总结、督导自评、课后服务方案、安全教育/教研记录）。"""
+    doc = load_document(path)
+    if doc.kind == "table":
+        lines = [" ".join(row) for table in doc.tables for row in table]
+    else:
+        lines, _ = cut_at_boundary(doc.lines)
+    compulsory = stage == "义务教育"
+    issues: List[Issue] = []
+    seen = set()
+    for index, line in enumerate(lines, start=1):
+        if not line.strip():
+            continue
+        for rid, lv_c, lv_o, cat, pat, msg, sug, basis in GENERAL_RULES:
+            level = lv_c if compulsory else lv_o
+            for m in pat.finditer(line):
+                before = re.split(r"[。！？；!?;，,]", line[:m.start()])[-1][-12:]
+                if NEG_RE.search(before + m.group(0)):
+                    continue
+                key = (rid, index)
+                if key in seen:
+                    continue
+                seen.add(key)
+                issues.append(Issue(id=rid, level=level, category=cat, message=msg,
+                                    suggestion=sug, basis=basis, line=index,
+                                    excerpt=excerpt_of(line, m.start(), m.end(), 12)))
+                break
+    issues.sort(key=lambda i: (LEVELS.index(i.level), i.line))
+    return {
+        "mode": "general",
+        "file": path.name,
+        "stage": stage,
+        "summary": summarize(issues, "\n".join(lines)),
+        "issues": [i.to_dict() for i in issues],
+    }
+
+
 # ---------------------------------------------------------------------------
 # 输出
 # ---------------------------------------------------------------------------
 
 def render_check_text(report: dict) -> str:
     s = report["summary"]
-    title = "学生评语检查" if report["mode"] == "comments" else "面向家长文书检查"
+    titles = {"comments": "学生评语检查", "parents": "面向家长文书检查", "general": "校内综合文书检查"}
+    title = titles.get(report["mode"], "中小学文书检查")
     head = f"{title}：{report['file']}（学段：{report['stage']}"
     if report["mode"] == "comments":
         head += f"，共 {report['entry_count']} 条"
@@ -1413,6 +1483,12 @@ def make_parser() -> argparse.ArgumentParser:
     p.add_argument("--stage", choices=STAGES, default="义务教育", help="学段，默认义务教育")
     p.add_argument("--json", action="store_true", help="以 JSON 格式输出")
     p.add_argument("--strict", action="store_true", help="存在 P0 时返回 1")
+
+    p = _sub(sub, "general", "校内综合文书检查（学期计划总结、督导自评、课后服务方案、安全/教研记录）")
+    p.add_argument("file", help="文稿（.txt、.md、.docx）")
+    p.add_argument("--stage", choices=STAGES, default="义务教育", help="学段，默认义务教育")
+    p.add_argument("--json", action="store_true", help="以 JSON 格式输出")
+    p.add_argument("--strict", action="store_true", help="存在 P0 时返回 1")
     return parser
 
 
@@ -1436,6 +1512,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         elif args.command == "comments":
             report = check_comments(Path(args.file), Path(args.facts) if args.facts else None, args.stage,
                                     args.min_chars, args.max_chars, args.similarity, args.person)
+            text = render_check_text(report)
+        elif args.command == "general":
+            report = check_general(Path(args.file), args.stage)
             text = render_check_text(report)
         else:
             report = check_parents(Path(args.file), args.stage)

@@ -34,7 +34,21 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 VERSION = "1.2.0"
-KINDS = ("通知", "告知书", "倡议书", "应急通知", "公示", "群消息")
+KINDS = ("通知", "告知书", "倡议书", "应急通知", "公示", "群消息", "内部材料")
+
+# 基层内部材料（政务信息、迎检材料、实事/一表通报告）减负规则
+BURDEN_NEG_RE = re.compile(r"不得|严禁|禁止|不要求|取消|杜绝|不把|不再")
+TRACE_AS_RESULT_RE = re.compile(
+    r"(?:召开|组织)[^。；，,\n]{0,8}?会议\s*\d+\s*(?:次|场)[^。；\n]{0,24}?(?:发文|印发文件|上传照片|报送报表|留痕)\s*\d+"
+    r"|上传(?:工作)?照片\s*\d+\s*(?:余)?张[^。；\n]{0,16}?(?:成效|成绩|亮点)"
+)
+SHIFT_BURDEN_RE = re.compile(
+    r"签订(?:工作|安全|防汛|目标)?责任状"
+    r"|拍照上传(?:工作)?轨迹"
+    r"|纸质(?:版)?(?:与|和)电子(?:版)?(?:同时|重复)报送"
+    r"|向(?:各)?村[（(]?社区[）)]?下达(?:招商|执法|引资)(?:指标|任务)"
+)
+BASIS_BURDEN = "《整治形式主义为基层减负若干规定》；gongwen-grassroots references/redlines.md 第六、七条"
 LEVELS = ("P0", "P1", "P2")
 
 # 工具约定：群众文书单句超过 60 字提示；群消息超过 300 字提示（约一屏）
@@ -263,6 +277,8 @@ def detect_kind(title: str, explicit: Optional[str], filename: str = "") -> Tupl
         return "公示", "标题推断"
     if EMERGENCY_TITLE_RE.search(title):
         return "应急通知", "标题推断"
+    if re.search(r"迎检|自查报告|汇报|政务信息|一表通|准入清单", title):
+        return "内部材料", "标题推断"
     return "通知", "默认"
 
 
@@ -275,6 +291,8 @@ def find_salutation(body: Sequence[Tuple[int, str]]) -> Optional[Tuple[int, str]
 
 
 def is_public(kind: str, title: str, salutation: Optional[Tuple[int, str]]) -> bool:
+    if kind == "内部材料":
+        return False
     if kind in ("倡议书", "群消息", "公示", "告知书"):
         return True
     if salutation and PUBLIC_AUDIENCE_RE.search(salutation[1]):
@@ -737,8 +755,31 @@ class Checker:
                              "乡镇（街道）发布的，有法律依据和本级职权才写，并写明依据和执法主体",
                              BASIS_COERCION)
 
+    def check_grassroots_burden(self) -> None:
+        for number, text in self.body:
+            for sentence in SENTENCE_SPLIT_RE.split(text):
+                if BURDEN_NEG_RE.search(sentence):
+                    continue
+                m1 = TRACE_AS_RESULT_RE.search(sentence)
+                if m1:
+                    self.add(
+                        "NTC-021", "P1", "减负", number, m1.group(0),
+                        f"疑似把留痕数量单列为工作成效（“{m1.group(0)}”）",
+                        "删去单纯堆砌开会、发文、上传照片数量的表述，改为写清解决了什么实际问题及客观结果",
+                        BASIS_BURDEN,
+                    )
+                m2 = SHIFT_BURDEN_RE.search(sentence)
+                if m2:
+                    self.add(
+                        "NTC-022", "P1", "减负", number, m2.group(0),
+                        f"疑似向村（社区）转嫁责任或层层加码（“{m2.group(0)}”）",
+                        "不得要求村（社区）签订责任状、拍照上传轨迹、纸质电子重复报送或下达执法招商指标",
+                        BASIS_BURDEN,
+                    )
+
     def run(self) -> None:
-        self.check_elements()
+        if self.kind != "内部材料":
+            self.check_elements()
         self.check_weekday()
         self.check_plain()
         self.check_initiative()
@@ -747,6 +788,7 @@ class Checker:
         self.check_prewarning()
         self.check_repealed()
         self.check_coercion()
+        self.check_grassroots_burden()
         order = {lv: i for i, lv in enumerate(LEVELS)}
         self.issues.sort(key=lambda i: (order[i["level"]], i["line"] or 0, i["id"]))
 

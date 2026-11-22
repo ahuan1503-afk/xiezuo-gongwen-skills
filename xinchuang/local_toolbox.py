@@ -14,10 +14,12 @@ from __future__ import annotations
 
 import argparse
 import base64
+import importlib.util
 import io
 import json
 import sys
 import tempfile
+from contextlib import redirect_stderr, redirect_stdout
 from collections import OrderedDict
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
@@ -136,6 +138,21 @@ input,select{padding:.3em .45em;border:1px solid #ccc;border-radius:3px;font-siz
     <button data-op="format_html">⑦b HTML 轻排版（预览/打印 PDF）</button>
     <label class="filebtn">⑧ OFD 结构体检（选择 .ofd 文件）<input type="file" id="fileOfd" accept=".ofd"></label>
   </div>
+  <div class="bar">
+    <label>行业专检包：
+      <select id="indPack">
+        <option value="grassroots">基层（居民文书/防汛/迎检减负）</option>
+        <option value="hospital">医院（评审/绩效/质量/RCA/议题/行风）</option>
+        <option value="soe">国企（三重一大/议案决议/经营/ESG/合规）</option>
+        <option value="k12_parents">中小学·面向家长文书（家长信/家长会）</option>
+        <option value="k12_general">中小学·校内综合文书（计划总结/自评/课后服务）</option>
+        <option value="university">高校·专用文书（自评/学科/总结/签报/辅导员）</option>
+        <option value="university_blind">高校·活页/申报书匿名审查（额外脱敏词作身份词）</option>
+      </select>
+    </label>
+    <label><input type="checkbox" id="indExt"> 对外材料从严</label>
+    <button data-op="industry_check">⑨ 行业专检（右框）</button>
+  </div>
 </div>
 
 <div class="card">
@@ -212,7 +229,8 @@ document.querySelectorAll('button[data-op]').forEach(function(btn){
     var op=btn.dataset.op; LAST_OP=op;
     postJson('/api/'+op,{
       a:$('a').value, b:$('b').value, hf_a:HF.a, hf_b:HF.b,
-      terms:$('terms').value, doc_type:$('dt').value, unit_fonts:$('uf').value
+      terms:$('terms').value, doc_type:$('dt').value, unit_fonts:$('uf').value,
+      industry:$('indPack').value, ind_external:$('indExt').checked
     }).then(function(r){
       showResult(r);
       if(op==='restore'&&r.ok){$('b').value=r.text;}
@@ -522,6 +540,90 @@ def op_ofd(d: dict) -> dict:
     return {"ok": ok, "text": ofd_check.render_text(result), "note": note}
 
 
+INDUSTRY_SCRIPTS: Dict[str, Tuple[str, Path]] = {
+    "grassroots": ("基层行业专检", ROOT / "skills" / "gongwen-grassroots" / "scripts" / "notice_check.py"),
+    "hospital": ("医院行业专检", ROOT / "skills" / "gongwen-hospital" / "scripts" / "hospital_check.py"),
+    "soe": ("国企行业专检", ROOT / "skills" / "gongwen-soe" / "scripts" / "soe_check.py"),
+    "k12_parents": ("中小学家长文书专检", ROOT / "skills" / "gongwen-k12" / "scripts" / "k12_check.py"),
+    "k12_general": ("中小学校内文书专检", ROOT / "skills" / "gongwen-k12" / "scripts" / "k12_check.py"),
+    "university": ("高校专用文书专检", ROOT / "skills" / "gongwen-university" / "scripts" / "university_check.py"),
+    "university_blind": ("高校活页匿名审查", ROOT / "skills" / "gongwen-university" / "scripts" / "proposal_check.py"),
+}
+
+
+_INDUSTRY_MOD_CACHE: Dict[str, object] = {}
+
+
+def _load_industry_module(key: str, script: Path):
+    mod = _INDUSTRY_MOD_CACHE.get(key)
+    if mod is not None:
+        return mod
+    mod_name = f"_gw_ind_{key}_{script.stem}"
+    spec = importlib.util.spec_from_file_location(mod_name, str(script))
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"无法加载脚本：{script.name}")
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules[mod_name] = mod
+    spec.loader.exec_module(mod)
+    _INDUSTRY_MOD_CACHE[key] = mod
+    return mod
+
+
+def op_industry_check(d: dict) -> dict:
+    text = str(d.get("b") or "")
+    if not text.strip():
+        return {"ok": False, "text": "右框没有待检正文。"}
+    key = str(d.get("industry") or "grassroots").strip()
+    if key not in INDUSTRY_SCRIPTS:
+        return {"ok": False, "text": f"不支持的行业专检选项：{key}"}
+    label, script = INDUSTRY_SCRIPTS[key]
+    if not script.is_file():
+        return {"ok": False, "text": f"未找到 {label} 脚本（{script.name}），请确认已安装对应行业包。"}
+
+    doc_type = str(d.get("doc_type") or "").strip()
+    external = bool(d.get("ind_external"))
+    terms = str(d.get("terms") or "").strip()
+
+    with tempfile.TemporaryDirectory() as tmp:
+        target = Path(tmp) / "待检成稿.txt"
+        target.write_text(text, encoding="utf-8")
+        argv: List[str] = []
+        if key == "k12_parents":
+            argv = ["parents", str(target), "--strict"]
+        elif key == "k12_general":
+            argv = ["general", str(target), "--strict"]
+        elif key == "university_blind":
+            argv = [str(target), "--blind", "--strict"]
+            if terms:
+                norm_terms = ",".join(t.strip() for t in terms.replace("、", ",").replace("，", ",").split(",") if t.strip())
+                if norm_terms:
+                    argv += ["--names", norm_terms]
+        elif key == "grassroots":
+            argv = [str(target), "--strict"]
+            if doc_type in ("通知", "告知书", "倡议书", "应急通知", "公示", "群消息", "内部材料"):
+                argv += ["--kind", doc_type]
+        else:
+            argv = [str(target), "--strict"]
+            if doc_type:
+                argv += ["--type", doc_type]
+            if external:
+                argv += ["--external"]
+
+        mod = _load_industry_module(key, script)
+        out_buf, err_buf = io.StringIO(), io.StringIO()
+        with redirect_stdout(out_buf), redirect_stderr(err_buf):
+            code = int(mod.main(argv))  # type: ignore[attr-defined]
+
+    out = out_buf.getvalue().strip()
+    err = err_buf.getvalue().strip()
+    if code == 2:
+        return {"ok": False, "text": err or out or f"{label}参数或输入错误。", "note": f"{label}失败"}
+    combined = out if not err else (out + NL + err).strip()
+    ok = code == 0
+    note = f"{label}完成：未检出 P0 红线问题。" if ok else f"{label}完成：存在 P0 级问题，请对照修改。"
+    return {"ok": ok, "text": combined or "检查完成。", "note": note}
+
+
 def _list_prompts() -> List[Dict[str, object]]:
     items: List[Dict[str, object]] = []
     for key, rel_dir, label in PROMPT_GROUPS:
@@ -571,6 +673,7 @@ OPS = {
     "format_html": op_format_html,
     "extract_docx": op_extract_docx,
     "ofd": op_ofd,
+    "industry_check": op_industry_check,
     "prompts": op_prompts,
     "prompt_text": op_prompt_text,
 }
