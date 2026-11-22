@@ -1,24 +1,25 @@
-<!-- README_SYNC: source=working-tree; updated=2026-10-22 -->
+<!-- README_SYNC: source=working-tree; updated=2026-11-22 -->
 
 <div align="center">
 
+简体中文 · [English](README_EN.md)
+
 # 公文 Skills · dyz-gongwen-skills
 
-**面向机关事业单位和国企文字工作者的公文工作台：简单通知一步直出（支持单文件 HTML 打印/复制），重型长文有老笔杆子笔力、守保密防编造底线、一键 GB/T 9704 国标排版（支持信创内网）。**
+**面向机关事业单位和国企文字工作者的公文工作台：轻快件一步直出并支持单文件 HTML 轻排版，长文内置老笔杆子笔力与规范词/文风指纹体检，守保密防编造底线，一键 GB/T 9704 国标 Word，并完整适配国产信创与政务内网。**
 
 作者：[duyunzhoudyz](https://github.com/duyunzhoudyz) · 免费分发，保留商业授权；转载和再分发请保留本署名。
 
-简体中文 · [English](README_EN.md)
-
-如果这个项目帮了你，点一个 Star，方便回来，也让更多有同样需求的人更容易发现它。
+如果这个项目解决了你的实际问题，点一个 [Star](https://github.com/duyunzhoudyz/dyz-gongwen-skills/stargazers)，方便以后回来，也让更多有同样需求的人更容易发现它。
 
 [![GitHub stars](https://img.shields.io/github/stars/duyunzhoudyz/dyz-gongwen-skills?style=flat&logo=github&label=Stars)](https://github.com/duyunzhoudyz/dyz-gongwen-skills/stargazers)
+[![CI](https://github.com/duyunzhoudyz/dyz-gongwen-skills/actions/workflows/ci.yml/badge.svg)](https://github.com/duyunzhoudyz/dyz-gongwen-skills/actions/workflows/ci.yml)
 [![License: PolyForm NC](https://img.shields.io/badge/License-PolyForm%20NC%201.0-blue.svg)](LICENSE)
-![Skills](https://img.shields.io/badge/skills-22-brightgreen)
-[![Version](https://img.shields.io/badge/version-1.1.0-orange)](CHANGELOG.md)
-[![Platforms](https://img.shields.io/badge/platforms-7%20Agent%20tools%20%7C%20web%20LLM-lightgrey)](#快速开始)
+[![Version](https://img.shields.io/badge/version-1.2.0-orange)](CHANGELOG.md)
+[![Skills](https://img.shields.io/badge/skills-22-brightgreen)](#技能地图)
+[![Platforms](https://img.shields.io/badge/platforms-7%20Agent%20tools%20%7C%20web%20LLM%20%7C%20intranet-lightgrey)](#快速开始)
 
-[快速开始](#快速开始) · [技能地图](#技能地图) · [直接这样说](#直接这样说) · [效果](#效果) · [常见问题](#常见问题) · [关注与交流](#关注与交流)
+[v1.2.0 亮点](#v120-升级亮点) · [快速开始](#快速开始) · [信创内网一键指令](#信创环境与内网银河麒麟统信-uos内网-windowswps不用-agent-工具) · [技能地图](#技能地图) · [直接这样说](#直接这样说) · [效果](#效果) · [常见问题](#常见问题) · [关注与交流](#关注与交流)
 
 </div>
 
@@ -38,12 +39,23 @@
 
 | | 一般的 AI 写作 | dyz-gongwen-skills |
 |---|---|---|
-| 流程轻重 | 简单通知和重型材料混为一谈 | **轻快件一步直出**（会议/事务通知秒出，不走重流水线）；**重型件机检门控 + 八关深审** |
-| 数据和案例 | 缺了就编 | 只用你给的材料，缺的标【待补】，台账逐项机检对账 |
-| 笔力与分寸 | AI 腔、碎短句、动辄“必须/严禁” | 内置站位分寸、句子正反对照库与多形态节奏范文；`--fingerprint` 体检均句长、强制词配额与段落重心 |
+| 流程轻重 | 简单通知和重型材料混为一谈 | **轻快件一步直出**（1000 字内会议/事务通知秒出，不走重流水线）；**标准件机检门控**；**重型件八关深审** |
+| 数据和案例 | 缺了就编 | 只用你给的材料，缺的标【待补】，台账与表格合计逐项机检对账 |
+| 笔力与规范词 | AI 腔、碎短句、动辄“必须/严禁”、易混词出错 | 内置站位分寸、句子诊所与 6 篇节奏范文；13 类机检覆盖易混规范词、机构旧称与本单位规范词；`--fingerprint` 参照 300 篇公开公文语料体检均句长与分文种强制词配额 |
 | 态度 | 对冲、免责声明 | 措辞按行文方向分层明确，需核实事项外置到起草说明 |
-| 格式交付 | 自己排，缺字体易乱版 | **轻交付**：零依赖单文件 HTML（浏览器打印/存 PDF、一键复制微信/Word）；**正式交付**：GB/T 9704 国标 Word（审计 97.2 分） |
-| 单位差异 | 一刀切 | 7 类单位画像、5 种角色模式、5 个行业包、本机零联网信创工具箱 |
+| 轻重双交付 | 自己排，缺字体易乱版 | **轻交付**：纯标准库单文件 HTML（白头/红头/便签切换、GB/T 9704 页码打印存 PDF、一键复制发群/Word）；**正式交付**：GB/T 9704 七种版式 Word（审计 97.2 分，缺字体不静默替换） |
+| 单位差异与信创内网 | 一刀切、依赖联网和自主智能体 | 7 类单位画像、5 种角色模式、5 个行业包及专用机检；本机零联网信创工具箱、三档去 Agent 化交付与零外联静态审计 |
+
+---
+
+## v1.2.0 升级亮点
+
+以下四项升级已随 `v1.2.0` 一并发布（完整记录见 [CHANGELOG.md](CHANGELOG.md)，全部通过 2115 项单元测试及 CI 门禁）：
+
+1. **轻重分层快路径 + 单文件 HTML 轻排版**：1000 字内简单会议/事务/转发通知、批复、复函、签报由 `gongwen-draft` 一步直出；新增纯标准库零外联 [`build_html.py`](skills/gongwen-format/scripts/build_html.py)（经 Chrome 无头打印实测），输出单文件 HTML，支持白头/红头/便签三种版式实时切换、打印自动加 GB/T 9704 单双页页码（便签不加页码，Chrome/Edge 131+）、署名成文日期定位、落款与末段正文不跨页、附件说明三列对齐，顶部工具条打印自动隐藏，一键存 PDF 或复制纯文本/富文本。
+2. **老笔杆子笔力引擎 + 规范用词库 + 300 篇语料校准的文风指纹**：新增站位分寸、句子诊所与 6 篇多形态虚构节奏范文（[`shared/style/`](shared/style/)），同步接入核心起草/改稿 skill 与全部五个行业包；新增规范用词规则库 [`normative-terms.md`](shared/rules/normative-terms.md) 与 `term` 机检类（`TRM-001`～`TRM-012` 易混词、停用提法、机构改革旧称，白名单防误伤行业规范词，`--banned` 支持 `## 本单位规范词` 表），机检扩展至 **13 类、41 种文书**；`gongwen_lint.py --fingerprint` 与 300 篇公开政府公文语料（[`baseline.md`](shared/style/baseline.md)）同口径校验均句长、分文种强制词密度（300 篇真实公文超阈值仅 1.0%）与段落重心。
+3. **国产信创与政务内网全链路适配**：面向银河麒麟/统信 UOS + WPS 及禁用自主智能体的内网环境，提供双击即用的本机零联网工具箱（`xinchuang/local_toolbox.py`，仅监听 `127.0.0.1:8765`，不联网不落盘，一页集成提示词复制、导入 `.docx`、涉密强拦截、多标签页隔离双向脱敏还原、八关机检与指纹体检、事实核对、7 档行业专检、字体自检、HTML 轻排版、无 `python-docx`/`lxml` 时自动降级的纯标准库国标排版及 OFD 结构体检）、三档去 Agent 化交付（22 份 ≤4000 字精简版 [`dist/prompts-lite/`](dist/prompts-lite/)、4 套单对话合集 [`dist/prompts-bundles/`](dist/prompts-bundles/)、16 文件 461 片 RAG 知识库与 Dify/FastGPT/MaxKB/扣子导入包 [`dist/rag-kb/`](dist/rag-kb/)）以及 5 套免 Python/免宏空白模板（[`xinchuang/templates/`](xinchuang/templates/)）。全部离线脚本经 `tools/security_audit.py --strict` 零外联 AST 静态审计纳入 CI；8 条防线抽测（[`evals/xinchuang/`](evals/xinchuang/)）在 `deepseek-chat` 上 `system` 与 `first-message` 双模式均 **8/8 通过**（2026-11-22，见 [system 报告](evals/results/xinchuang-deepseek.md)、[first-message 报告](evals/results/xinchuang-deepseek-firstmsg.md)）。
+4. **五个行业包深度升级 + 专用机检全覆盖 + 6 套实跑示例**：基层、医院、高校、中小学、国企五包补全高危红线（高校十二条红线与会签核查、中小学四栏审稿与禁抄学生姓名、医院敏感材料保密提醒）并全量接入笔力引擎与文风指纹；新增高校专用机检 `university_check.py`（11 条规则）、医院 8 类文书标本全覆盖、基层迎检内部材料与中小学校内文书专检，全部接入工具箱 7 档行业专检；新增三套行业端到端示例（[D-中小学评语本地脱敏与还原](examples/D-中小学评语本地脱敏与还原/)、[E-高校活页匿名形式审查](examples/E-高校活页匿名形式审查/)、[F-国企三重一大议题与专检](examples/F-国企三重一大议题与专检/)）。
 
 ---
 
@@ -69,31 +81,41 @@
 | **正式红头送签 / 归档 Word** | `gongwen-format` 一键生成 GB/T 9704 国标 `.docx`（字体 100% 诚实不静默替换） |
 | **不想装工具 / 单位内网电脑** | 网页版直接复制 [`dist/prompts-bundles/`](dist/prompts-bundles/) 一站式合集；内网双击 `xinchuang/启动工具箱.bat`（或 `.sh`）浏览器打开即用 |
 
-再看你在用什么工具：
+再看你在用什么环境（点链接直达一键复制指令）：
 
-| 你在用 | 安装方式 |
+| 你在用什么环境 | 最直接的用法 |
 |---|---|
-| DeepSeek、豆包、Kimi 等网页版，或单位内网模型 | 不用安装，复制提示词即可，见[方式四](#方式四网页大模型或内网模型不用安装) |
-| Claude Code | 插件市场两行命令，见[方式二](#方式二claude-code-插件市场) |
-| Codex、Cursor、Gemini CLI、GitHub Copilot、Qwen Code、Kimi Code CLI | 一键脚本，见[方式一](#方式一一键安装脚本windowsmacoslinux) |
-| 已经在用 Agent，不想敲命令 | 见[方式五](#方式五让-agent-自己装) |
+| **银河麒麟 / 统信 UOS / 内网 Windows + WPS（禁用 Agent）** | 下载离线包，一条命令启动本机零联网工具箱，见[信创与政务内网一键指令](#信创环境与内网银河麒麟统信-uos内网-windowswps不用-agent-工具) |
+| **DeepSeek、豆包、Kimi 等国内网页版，或单位内网大模型** | 不用安装，直接复制提示词，见[方式四](#方式四国内网页大模型或内网模型不用安装) |
+| **Claude Code** | 插件市场两行命令，见[方式二](#方式二claude-code-插件市场) |
+| **Codex、Cursor、Gemini CLI、GitHub Copilot、Qwen Code、Kimi Code CLI** | 一键安装脚本，见[方式一](#方式一一键安装脚本windowsmacoslinux) |
+| **已经在用 Agent（含 Cursor / Trae / CodeBuddy 等）不想敲命令** | 复制一句话让 Agent 自己装，见[方式五](#方式五让-agent-自己装) |
 
 Trae、CodeBuddy 的 skills 目录路径尚未完全核实，一键脚本提供了对应目标（`--target trae`、`--target codebuddy`），可以试用，遇到问题请提 Issue。
 
 ### 方式一：一键安装脚本（Windows、macOS、Linux）
 
-1. 下载本仓库。会用 git 的运行 `git clone https://github.com/duyunzhoudyz/dyz-gongwen-skills.git`；不会的，点本页上方绿色 **Code** 按钮，选 **Download ZIP**，下载后解压。
-2. 在仓库文件夹里运行（Windows 在文件夹地址栏输入 `powershell` 回车；macOS、Linux 在终端里进入该文件夹）：
+> **国内下载提示**：有 Git 的直接复制下方整段命令；如果电脑没装 Git 或克隆较慢，直接打开 [Releases 页面](https://github.com/duyunzhoudyz/dyz-gongwen-skills/releases) 下载 `dyz-gongwen-skills-offline-1.2.0.zip`（或点本页上方绿色 **Code → Download ZIP**），解压后在文件夹里执行安装命令即可。
+
+**Windows（在解压后的文件夹地址栏输入 `powershell` 回车，整段粘贴）：**
 
 ```powershell
+git clone https://github.com/duyunzhoudyz/dyz-gongwen-skills.git
+cd dyz-gongwen-skills
 powershell -ExecutionPolicy Bypass -File .\install.ps1
 ```
 
+**macOS / Linux / 银河麒麟 / 统信 UOS（终端整段粘贴）：**
+
 ```bash
+git clone https://github.com/duyunzhoudyz/dyz-gongwen-skills.git
+cd dyz-gongwen-skills
 bash install.sh
 ```
 
-脚本检查 Python（3.9+），询问是否安装排版依赖，然后把 17 个核心 skill 装进本机找到的全部 Agent 工具。只想看会装到哪里而不写入文件：Windows 末尾加 `-WhatIf`，macOS/Linux 加 `--dry-run`。
+> 如已从 Releases 下载解压 ZIP，跳过前两行，在解压目录里直接运行最后一行即可。
+
+脚本会检查 Python（3.9+），询问是否安装排版依赖，然后把 17 个核心 skill 装进本机找到的全部 Agent 工具。只想预览会装到哪里而不写入文件：Windows 末尾加 `-WhatIf`，macOS/Linux 加 `--dry-run`。
 
 查看支持哪些工具，或只装到某一个工具（以 Qwen Code 为例）：
 
@@ -115,17 +137,19 @@ python tools/install.py --target qwen
 npx skills add duyunzhoudyz/dyz-gongwen-skills
 ```
 
-### 方式四：网页大模型或内网模型（不用安装）
+### 方式四：国内网页大模型或内网模型（不用安装）
 
-打开 [`dist/prompts/`](dist/prompts/)，复制提示词文件全文，粘贴到对话开头，再说出你的需求。第一次用，从 `gongwen.md`（总入口）开始。
+无需命令行，直接打开下面任一目录复制全文粘贴到 DeepSeek、豆包、Kimi 或单位内网大模型对话开头即可：
 
-- 每个 skill 对应一份提示词，每份约 2.6 万～2.9 万字。
-- 需要换到下一个 skill 时，当前对话会给你一张交接卡。新开对话，先粘贴下一份提示词，再粘贴交接卡和材料。
-- 单位内网使用，运行 `python tools/build_prompts.py --offline` 生成离线包（输出到 `dist/offline/`）。
+| 你的对话场景 | 直接复制哪个目录 | 说明 |
+|---|---|---|
+| **一个对话走完起草 + 去腔 + 核稿（最省事）** | [`dist/prompts-bundles/`](dist/prompts-bundles/) | 4 套一站式合集（法定公文 / 综合材料 / 核稿润色 / 落实整改），不用来回切对话 |
+| **内网模型系统提示词框有字数限制（4K～8K）** | [`dist/prompts-lite/`](dist/prompts-lite/) | 22 份手写精修精简版，每份 ≤4000 字 |
+| **需要单技能完整规则与条款细节** | [`dist/prompts/`](dist/prompts/) | 22 份完整提示词（每份约 2.6 万～2.9 万字），第一次从 `gongwen.md` 开始；换站时粘贴对话给出的交接卡 |
 
 ### 方式五：让 Agent 自己装
 
-把这段话发给你的 Agent：
+把这段话直接复制发给你的 Agent：
 
 ```text
 请把 https://github.com/duyunzhoudyz/dyz-gongwen-skills 中 skills/ 目录下的 skill 安装到你的 skills 目录。
@@ -135,7 +159,7 @@ npx skills add duyunzhoudyz/dyz-gongwen-skills
 
 ### 选装行业包
 
-行业包装在核心 skill 之上，按需选装。以医院为例：
+行业包装在核心 skill 之上，按需选装。以医院为例，直接复制对应一行：
 
 ```text
 /plugin install gongwen-hospital@dyz-gongwen-skills
@@ -145,23 +169,83 @@ npx skills add duyunzhoudyz/dyz-gongwen-skills
 bash install.sh --pack hospital
 ```
 
-一键脚本支持多选：`--pack hospital --pack soe`；装全部：`--pack all`。
+```powershell
+powershell -ExecutionPolicy Bypass -File .\install.ps1 --pack hospital
+```
 
-网页版直接用 `dist/prompts/` 里对应的提示词，如 `gongwen-hospital.md`。
+一键脚本支持多选（`--pack hospital --pack soe`），装全部用 `--pack all`；网页版直接复制 `dist/prompts/` 或 `dist/prompts-lite/` 中对应行业包文件（如 `gongwen-hospital.md`）。
 
-> **依赖**：排版和 Excel 图表需要 Python 3.9+ 及 `python-docx`、`openpyxl`（`pip install python-docx openpyxl`，一键脚本会询问是否安装）。没有 Python 时，排版 skill 给出 WPS/Word 手动设置清单。
+> **排版与图表依赖（国内加速可选）**：完整 Word 七种版式和 Excel 图表需要 Python 3.9+ 及 `python-docx`、`openpyxl`。官方源较慢时，国内用户可直接复制下方清华源命令安装：
+>
+> ```bash
+> pip install -i https://pypi.tuna.tsinghua.edu.cn/simple python-docx openpyxl
+> ```
+>
+> 没有装这些依赖或没有 Python 也能用，见下方信创零依赖方案。
 >
 > **卸载**：安装命令末尾加 `--uninstall`，确认清单后再加 `--yes`。
 
-### 信创环境与内网（银河麒麟、统信 UOS、WPS，不用 Agent 工具）
+### 信创环境与内网（银河麒麟、统信 UOS、内网 Windows、WPS，不用 Agent 工具）
 
-单位电脑是国产系统、不能用编程类智能体工具时，按下面用。全部由使用者手动触发，没有后台自动执行。
+面向国产系统、政务内网或禁用自主智能体的办公电脑：全部由使用者手动触发，无后台常驻、无外联调用。**先从 [Releases 页面](https://github.com/duyunzhoudyz/dyz-gongwen-skills/releases) 下载 `dyz-gongwen-skills-offline-1.2.0.zip`（或由信息中心上传至内网共享盘），解压后按场景直接复制下方指令：**
 
-- **本机工具箱（双击即用）**：双击 `xinchuang/启动工具箱.sh`（或 `.desktop`，Windows 双击 `启动工具箱.bat`），自动用浏览器打开 `http://127.0.0.1:8765`。在一个页面内完成：一键复制内网提示词、直接导入 `.docx`/`.txt` 做涉密检测与双向脱敏还原、八关机检与文风指纹体检、事实数字核对、字体自检、**HTML 轻排版（预览/打印 PDF）**、国标排版（无 `python-docx`/`lxml` 时自动切换内置零依赖轻量排版，龙芯同样可用）、OFD 结构体检。只监听本机回环地址，不联网、不调模型、不落盘，多标签页映射表相互隔离。
-- **精简提示词与一站式合集**：系统提示词框字数受限的，用 `dist/prompts-lite/`（22 份全精修，每份不超过 4000 字）；想在一个对话里走完起草、去腔、核稿的，用 `dist/prompts-bundles/`（4 套一站式合集）。
-- **内网知识库**：单位信息中心搭 Dify、MaxKB、FastGPT、扣子开源版的，导入 `dist/rag-kb/` 的知识切片，Dify 另有 `dify-app-template.yml`（已关闭 Agent 模式）。
-- **免 Python / 免宏排版**：信息中心禁用 WPS 宏且没装 Python 时，直接打开 `xinchuang/templates/` 里的 5 套 GB/T 9704 空白 `.docx` 模板（白头、红头、纪要、签报、综合材料）粘贴文字；允许用宏时可用 `skills/gongwen-format/assets/wps_gongwen_macro.js`；OFD 导出后可在工具箱里直接上传体检或运行 `skills/gongwen-format/scripts/ofd_check.py`；Linux 装字体和 WPS 菜单对照见 `skills/gongwen-format/references/xinchuang.md`。
-- **过审材料、真机验收与离线依赖**：`python tools/build_prompts.py --offline --xinchuang` 生成的离线包里，自动附带《安全自查报告.md》（全部 Python 脚本和 JS 宏的零外联静态审计）、`SHA256SUMS.txt`、`xinchuang/单位信息中心入网评估与部署指引.md`（给办公室主任与信息中心的分级合规及三种部署方案）与 `xinchuang/信创真机验收清单.md`；仓库内另提供 `evals/xinchuang/smoke_eval.py`，可对单位自建或国产大模型（DeepSeek/Qwen 等）一键抽测 8 条公文防线。若提前用 `tools/build_wheelhouse.py` 预下载了各架构 `wheelhouse/`，也会一并收入离线包。
+#### 1. 办公人员日常使用：一键启动本机零联网工具箱
+
+> 仅监听 `http://127.0.0.1:8765`，不联网、不调模型、不落盘；在一个本地网页里完成提示词一键复制、导入 `.docx`/`.txt`、涉密强拦截、多标签页隔离双向脱敏还原、八关机检与文风指纹体检、事实核对、**7 档行业专检**、字体自检、**HTML 轻排版**、国标 Word（无 `python-docx`/`lxml` 时自动降级内置零依赖排版，龙芯同样可用）与 OFD 体检。
+
+**银河麒麟 / 统信 UOS / 国产 Linux（双击 `xinchuang/启动工具箱.sh` 或 `.desktop`，或在解压目录右键打开终端粘贴）：**
+
+```bash
+bash xinchuang/启动工具箱.sh
+```
+
+**内网 Windows（双击 `xinchuang\启动工具箱.bat`，或在解压目录地址栏输入 `powershell` 后粘贴）：**
+
+```powershell
+.\xinchuang\启动工具箱.bat
+```
+
+**不想开工具箱，单条命令直接排 HTML / 做机检 / 查 OFD（全零依赖，纯 Python 标准库）：**
+
+```bash
+python3 skills/gongwen-format/scripts/build_html.py draft.txt -o output.html
+python3 shared/scripts/gongwen_lint.py draft.txt --fingerprint --baseline
+python3 skills/gongwen-format/scripts/ofd_check.py output.ofd
+```
+
+**电脑完全没装 Python 且禁用 WPS 宏（零命令）：**
+- 排版：直接双击打开 [`xinchuang/templates/`](xinchuang/templates/) 里的 5 套 GB/T 9704 空白 `.docx` 模板（白头、红头、纪要、签报、综合材料）粘贴文字；允许用宏时可用 `skills/gongwen-format/assets/wps_gongwen_macro.js`；Linux 字体与 WPS 菜单对照见 `skills/gongwen-format/references/xinchuang.md`。
+- 写稿：直接复制 [`dist/prompts-bundles/`](dist/prompts-bundles/)（4 套一站式合集）或 [`dist/prompts-lite/`](dist/prompts-lite/)（22 份 ≤4000 字精简版）贴入单位内网大模型对话。
+
+#### 2. 信息中心管理员：一键构建离线包、入网复核与内网部署
+
+**外网机一键打包信创离线包**（自动附带《安全自查报告.md》、《SHA256SUMS.txt》、[入网评估与部署指引](xinchuang/单位信息中心入网评估与部署指引.md) 与 [15 分钟真机验收清单](xinchuang/信创真机验收清单.md)）：
+
+```bash
+python3 tools/build_prompts.py --xinchuang --offline
+```
+
+**如需把完整七种版式的离线依赖一并收入离线包**（预下载 x86_64 / 飞腾・鲲鹏 ARM64 / Windows 的 `wheelhouse/`；龙芯可从内网系统源装 `python3-docx python3-openpyxl python3-lxml` 或自动降级零依赖排版）：
+
+```bash
+python3 tools/build_wheelhouse.py --arch all
+python3 tools/build_prompts.py --xinchuang --offline
+```
+
+**信息中心 30 秒入网复核**（在审核机解压离线包后粘贴：校验完整性 + 零外联 AST 静态审计）：
+
+```bash
+sha256sum -c SHA256SUMS.txt
+python3 tools/security_audit.py --strict
+```
+
+**内网大模型 8 条公文防线一键抽测**（适配 vLLM / Ollama / SGLang / 昇腾 MindIE 等 OpenAI 兼容接口；无系统提示词框的内网网页对话保留 `--system-mode first-message`）：
+
+```bash
+python3 evals/xinchuang/smoke_eval.py --base-url http://127.0.0.1:8000/v1 --model deepseek-r1-32b --system-mode first-message
+```
+
+**内网知识库统一入口（Dify / MaxKB / FastGPT / 扣子开源版）**：导入 [`dist/rag-kb/`](dist/rag-kb/) 的 16 文件 461 片知识切片（Dify 可直接导入已关闭 Agent 模式的 `dify-app-template.yml`），全单位干部通过内网浏览器访问，个人电脑零安装。详见 [`evals/xinchuang/`](evals/xinchuang/) 与 [单位信息中心入网评估与部署指引](xinchuang/单位信息中心入网评估与部署指引.md)。
 
 ---
 
@@ -183,7 +267,7 @@ bash install.sh --pack hospital
 
 | Skill | 能力摘要 | 成熟度 |
 |---|---|---|
-| [`gongwen-draft`](skills/gongwen-draft/) 法定公文 | 通知、请示、报告、函、通报、批复、意见、签报、决定、通告、公告；先定文种再成稿 | Stable |
+| [`gongwen-draft`](skills/gongwen-draft/) 法定公文 | 通知、请示、报告、函、通报、批复、意见、签报、决定、通告、公告；1000 字内轻快件一步直出，先定文种再成稿 | Stable |
 | [`gongwen-report`](skills/gongwen-report/) 综合文稿 | 总结、计划、工作要点、汇报、调研报告、经验材料、述职述责述廉、实施方案、大会报告 | Stable |
 | [`gongwen-speech`](skills/gongwen-speech/) 讲话类 | 领导讲话、主持词、致辞、表态/交流/代表发言；按时长定字数，写成口语稿 | Stable |
 | [`gongwen-party`](skills/gongwen-party/) 党建与组织生活 | 对照检查、党建报告、党课、研讨发言、心得汇报、"三会一课"记录整理；无本人事例只给提纲 | Stable |
@@ -200,13 +284,13 @@ bash install.sh --pack hospital
 | [`gongwen-polish`](skills/gongwen-polish/) 改稿润色 | 压缩、扩写、语气互转、大白话转公文、按领导批注改、多稿合并 | Stable |
 | [`gongwen-humanize`](skills/gongwen-humanize/) 去 AI 味 | 改掉 AI 腔，保留公文正当写法，以保住事实为前提（评测中事实保持率 99.6%） | Stable |
 | [`gongwen-direct`](skills/gongwen-direct/) 去防御性 | 删免责声明，把"建议""可以考虑"改成要求，让请示有倾向性意见 | Stable |
-| [`gongwen-review`](skills/gongwen-review/) 核稿审校 | 按"八关"核稿，出分级问题清单；机检标点、数字、格式、保密隐私、禁用词 | Stable |
+| [`gongwen-review`](skills/gongwen-review/) 核稿审校 | 按"八关"核稿，出分级问题清单；13 类机检覆盖标点、数字、格式、规范用词、文风指纹、保密隐私、本单位禁用词/规范词 | Stable |
 
 **交付工具**
 
 | Skill | 能力摘要 | 成熟度 |
 |---|---|---|
-| [`gongwen-format`](skills/gongwen-format/) 国标排版 | 按 GB/T 9704-2012 生成红头、信函、纪要、白头、材料、简报六种版式 Word；修复已有 docx | Stable |
+| [`gongwen-format`](skills/gongwen-format/) 国标排版 | 按 GB/T 9704-2012 生成红头、信函、纪要、命令、白头、材料、简报七种版式 Word（含联合行文/附件另面/套打），修复已有 docx；零依赖单文件 HTML 轻排版；OFD 体检 | Stable |
 | [`gongwen-data`](skills/gongwen-data/) 数据与图表 | 报表体检、同比环比计算（附算式）、数据写成公文句子、本机生成黑白灰 Excel 图表 | Stable |
 
 **行业包**（单独安装）
@@ -289,7 +373,9 @@ bash install.sh --pack hospital
 
 其他改动："建议各学校成立……专班"改成"各学校要成立……专班"；发文字号 `[2026]第12号` 改成 `〔2026〕12号`；"对家长一律移交公安机关予以拘留"的表述，核查后发现区教育局没有处罚权，予以删除。
 
-另有两个示例：[医院科室年终总结](examples/A-医院科室年终总结/)（要求 2000 字而素材不多：正文约 1890 字，只有 2 处【待补】，没有新增事实）和[申请经费该用函还是请示](examples/C-文种判断-函/)。
+其余五套端到端示范样本（均由现行脚本实跑生成，总览见 [examples/README.md](examples/README.md)）：
+- 通用文书：[医院科室年终总结](examples/A-医院科室年终总结/)（要求 2000 字而素材不多：正文约 1890 字，只有 2 处【待补】，无新增事实）、[申请经费该用函还是请示](examples/C-文种判断-函/)
+- 行业包专检：[中小学评语本机脱敏与还原](examples/D-中小学评语本地脱敏与还原/)（真实学生姓名全程不进 AI 对话）、[高校活页匿名形式审查](examples/E-高校活页匿名形式审查/)（匿名漏洞归零且输出自动遮蔽身份词）、[国企三重一大议题与专检](examples/F-国企三重一大议题与专检/)（程序倒置与六要件专检归零）
 
 ### 与同类项目对比
 
@@ -340,6 +426,10 @@ bash install.sh --pack hospital
 
 17 个核心 skill 通过率均不低于 97.4%，防编造 0 次，触发达标，标 Stable；5 个行业包在 v1.1.0 按 [CONTRIBUTING.md](CONTRIBUTING.md) 的 Stable 标准（数字标准加行业包工程门槛）重新评定：grassroots、hospital、k12、university 四包抽样复测达标（A 组期望通过率 80.9%～94.7%，复核后编造 0 次），升为 Stable；soe 首轮复核发现编造，补规则后重测用例 17–22（期望通过率 90.9%，复核后编造 0 次），与首轮用例 13–16 合计 92.7%（评分员口径），也升为 Stable，五个行业包均为 Stable。抽样方法和局限见 [v1.1 行业包抽样评测](evals/results/v1.1-industry-sample.md)，完整方法和局限见 [v1.0 评测报告](evals/results/v1.0-benchmark.md)。
 
+### 国产/内网模型防线抽测（2026-11-22）
+
+针对信创内网使用的精简提示词（`dist/prompts-lite/`）和一站式合集（`dist/prompts-bundles/`），用 `evals/xinchuang/smoke_eval.py` 在真实 `deepseek-chat` 上跑了 8 条防线回归用例（涉密强拦截、内部资料拦截、缺项待补不编造、脱敏占位符保留、亲历材料不代笔、综合材料保事实、八关核稿、巡察整改对账；材料全部虚构）：`system` 注入模式和无系统提示词框的 `first-message` 注入模式均 **8/8 通过**（详见 [system 报告](evals/results/xinchuang-deepseek.md)、[first-message 报告](evals/results/xinchuang-deepseek-firstmsg.md)）。这是 8 题底线抽测，不能替代全量质量评测。
+
 ---
 
 ## 六条写作红线
@@ -353,7 +443,7 @@ bash install.sh --pack hospital
 5. **规则可溯源、可机检**：每条格式、标点、数字规则都标注条款号，能用脚本检查的就不靠模型自觉。
 6. **辅助不代笔**：对照检查、述职等需要本人经历的材料，没有素材就只给提纲。
 
-规则依据：《党政机关公文处理工作条例》、GB/T 9704-2012、GB/T 15834-2011、GB/T 15835-2011、《整治形式主义为基层减负若干规定》。要点整理见 [shared/rules/](shared/rules/)，每条标注条款号。机检引擎按这些规则做 12 类检查，覆盖 41 类文书。
+规则依据：《党政机关公文处理工作条例》、GB/T 9704-2012、GB/T 15834-2011、GB/T 15835-2011、《整治形式主义为基层减负若干规定》及公文规范用词规则库。要点整理见 [shared/rules/](shared/rules/)，每条标注条款号。机检引擎按这些规则做 **13 类检查**（含易混规范词与机构旧称、可选 `--baseline` 语料基线与 `--fingerprint` 文风指纹），覆盖 41 类文书。
 
 ---
 
@@ -376,7 +466,7 @@ bash install.sh --pack hospital
 
 **1. 这个项目是什么，收费吗？**
 
-dyz-gongwen-skills 是给机关事业单位、国企文字工作者用的公文写作 Skills 集合，v1.1.0 有 22 个 skill。按 PolyForm Noncommercial 1.0.0 许可证源码公开（source-available，不是 OSI 意义上的开源），个人及非商业用途免费；商业用途请联系作者。
+dyz-gongwen-skills 是给机关事业单位、国企文字工作者用的公文写作 Skills 集合，v1.2.0 包含 22 个 skill 与信创零联网工具箱。按 PolyForm Noncommercial 1.0.0 许可证源码公开（source-available，不是 OSI 意义上的开源），个人及非商业用途免费；商业用途请联系作者。
 
 **2. 没有 Claude，能用吗？**
 
@@ -396,7 +486,7 @@ dyz-gongwen-skills 是给机关事业单位、国企文字工作者用的公文�
 
 **6. 排出来的 Word 字体不对，或者没有 Python，怎么办？**
 
-项目不随附字体，也不会用别的字体顶替。缺字体时，排版 skill 会在回复开头指出缺哪几款，并告诉你怎么安装；装好后重启 Word/WPS 再核对。没有 Python 时，排版 skill 给出 WPS/Word 手动设置清单。
+项目不随附字体，也不会用别的字体顶替。缺字体时，排版 skill 会在回复开头指出缺哪几款，并告诉你怎么安装；装好后重启 Word/WPS 再核对。有 Python 但没装 `python-docx`/`lxml`（含龙芯等架构）时，可直接用单文件 HTML 轻排版（`build_html.py`）或本机工具箱内置的纯标准库轻量国标排版（`xinchuang/lite_docx.py`）；完全没有 Python 时，可直接使用 [`xinchuang/templates/`](xinchuang/templates/) 里的 5 套免宏空白 `.docx` 模板，或按排版 skill 给出的 WPS/Word 手动设置清单操作。
 
 更多问题见 [使用须知](使用须知.md)。
 
@@ -409,13 +499,14 @@ dyz-gongwen-skills 是给机关事业单位、国企文字工作者用的公文�
 - [x] **v0.3「落实版」**：上级文件转化、整改材料、会议纪要、信息简报、数据与图表
 - [x] **v0.4「行业包」**：基层、医院、高校、中小学、国企
 - [x] **v1.0.0**：22 个 skill 一次发布；真实模型评测；一键安装脚本和行业包选装
-- [x] **v1.1.0**（当前版本）：五个行业包均升为 Stable；仓库与套件更名为 dyz-gongwen-skills
+- [x] **v1.1.0**：五个行业包均升为 Stable；仓库与套件更名为 dyz-gongwen-skills
+- [x] **v1.2.0**（当前版本）：国产信创与政务内网全链路适配（本机零联网工具箱、三档去 Agent 化交付、零外联静态审计、DeepSeek 8/8 防线抽测）；轻重分层快路径与单文件 HTML 轻排版；老笔杆子笔力引擎、规范用词库与 300 篇语料校准的文风指纹；五个行业包深度升级、专用机检全覆盖与 6 套实跑示范样本
 
 **后续计划**
 
-- [ ] 跨模型评测：提示词版在 DeepSeek、Qwen、Kimi 上的表现
+- [ ] 跨模型全量评测：提示词版在 DeepSeek、Qwen、Kimi 上的质量表现（8 条防线抽测已完成 DeepSeek 双模式验证）
 - [ ] 五个行业包均已为 Stable，持续收集测试者反馈、做人工盲评，据此修订规则
-- [ ] 在 Word、WPS 中实测排版效果；在 macOS、Linux 上实测字体检测
+- [ ] 在 Word、WPS 中实测排版效果；在 macOS、Linux、银河麒麟/统信 UOS 上实测字体检测与真机验收
 - [ ] 输出 Word 修订痕迹（目前只写批注）
 
 想帮忙测试的同事，请看 [测试者手册](docs/评测/测试者手册.md)：用虚构材料试用，不需要懂编程。
@@ -436,7 +527,7 @@ dyz-gongwen-skills 是给机关事业单位、国企文字工作者用的公文�
 
 规则写错了、遇到新场景、发现 bug，请到 [Issues](https://github.com/duyunzhoudyz/dyz-gongwen-skills/issues/new/choose) 选对应表单；使用心得也可以提 Issue，或扫上面的二维码进群交流。参与开发见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
-如果这个项目在你最需要的时候帮了你，可以点一个 Star，或者请作者喝杯茶。
+如果这个项目在你最需要的时候帮了你，可以点一个 [Star](https://github.com/duyunzhoudyz/dyz-gongwen-skills/stargazers) 或在右上角 Watch Releases 关注后续版本，或者请作者喝杯茶。
 
 <div align="center">
 
