@@ -88,17 +88,15 @@ license: PolyForm-Noncommercial-1.0.0
 
 ### 第四步　规划路线
 
-1. 查 `references/routes.md` 第二部分的路线表，取最贴近的一行，不自由组合。
-2. 一句话里有几件事的（如“督查要来，要准备什么”），按 routes.md 第五部分拆成几条路线。几件都归同一个 skill 的，合成一次交接，不问先做哪件，例如报告和另写的请示都交 gongwen-draft；归不同 skill 的（如整改情况报告交 gongwen-rectify、另写的请示交 gongwen-draft），按用户叙述的顺序给出第一件的下一步，“先做哪件”作为问题放在末尾。
-3. 已有成稿的，从中间环节开始；只要求某一步的（如“排成 Word”），只走那一步。成稿要改的，有 Python 环境时可运行 `python scripts/gongwen_lint.py <文件> --checks style,defensive`，看问题集中在 AI 腔还是防御腔，据此在 R12 中取舍 gongwen-humanize、gongwen-direct；机检只用来定路线。
-4. 本行业专用文书：装有行业包的走行业包；未安装的按 routes.md 第三部分交核心 skill，不拒绝。
-5. 表中没有、也超出本项目范围的需求，按 `references/skill-map.md` 第三部分如实说明，不硬接。
+1. 查 `references/routes.md` 第二部分，按**轻重分层**取最贴近一行：1000 字内简单通知/复函/批复/签报走 1 站快路径；常规件起草自检后按机检门控决定是否加润色核稿；重大红头/党委/对外件保留完整深审。
+2. 一句话含多件事的按 routes.md 第五部分拆分；同属一个 skill 的合成一次交接，分属不同 skill 的先给第一件，“先做哪件”放末尾提问。
+3. 已有成稿的从中间环节开始；只要某一步（如排 Word 或出 HTML 打印页）只走那一步。改稿有 Python 时可跑 `python scripts/gongwen_lint.py <文件> --checks style,defensive` 在 R12 中取舍。
+4. 行业专用文书装有行业包走行业包，未安装交核心 skill；超范围需求按 `references/skill-map.md` 第三部分如实说明。
 
 ### 第五步　调用或交接
 
-- 能调用其他 skill 且目标 skill 已安装的（如 Claude Code）：按路线逐个调用。每次调用带上单位画像、当前模式、本步任务和上一步产出的文件路径；交付文件统一放在 `公文/<YYYYMMDD>-<简短标题>/`。每完成一步报一句“第 2/5 步完成：……；下一步：……”。标“停”的节点停下等用户。
-- 目标 skill 没有安装，或在网页提示词版：按 `references/_shared/style/output-format.md` 第四部分同时给出三样：交接卡（写法见 `references/routes.md` 第四部分）、“新开对话粘贴 dist/prompts/<skill 名>.md 继续”的说明、安装命令。只回“安装方法见 README”不算。本 skill 不代为起草。
-- 用户不安装也不换提示词的，说明本 skill 只能做路线规划、简版建档、日历和能力地图，其余环节需对应 skill。
+- 能调用且已安装目标 skill：按路线逐个调用（轻快件 1 站直出），带上画像、模式、任务与上一步文件路径；需存盘/排版时放 `公文/<YYYYMMDD>-<简短标题>/`。多站完成报一句进度，标“停”处等用户确认。
+- 未安装或网页版：按 `references/_shared/style/output-format.md` 第四部分给交接卡、提示词续用说明和安装命令；简单通知可顺带建议用 `dist/prompts-bundles/01-法定公文一站式.md` 省去切对话。本 skill 不代为起草。
 
 ## 专项流程
 

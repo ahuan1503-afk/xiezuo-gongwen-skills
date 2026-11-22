@@ -29,6 +29,7 @@ sys.path.insert(0, str(ROOT / "skills" / "gongwen-review" / "scripts"))
 sys.path.append(str(ROOT / "skills" / "gongwen-format" / "scripts"))
 sys.path.append(str(Path(__file__).resolve().parent))
 
+import build_html  # noqa: E402
 import desensitize  # noqa: E402
 import fact_diff  # noqa: E402
 import gongwen_lint  # noqa: E402
@@ -132,6 +133,7 @@ input,select{padding:.3em .45em;border:1px solid #ccc;border-radius:3px;font-siz
     <button data-op="factdiff">⑤ 事实数字核对（左对右）</button>
     <button data-op="fonts">⑥ 本机字体自检</button>
     <button data-op="format" class="primary">⑦ 国标排版（右框下载 .docx）</button>
+    <button data-op="format_html">⑦b HTML 轻排版（预览/打印 PDF）</button>
     <label class="filebtn">⑧ OFD 结构体检（选择 .ofd 文件）<input type="file" id="fileOfd" accept=".ofd"></label>
   </div>
 </div>
@@ -219,6 +221,15 @@ document.querySelectorAll('button[data-op]').forEach(function(btn){
         for(var i=0;i<bin.length;i++){u[i]=bin.charCodeAt(i);}
         var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([u]));
         a.download='成稿.docx';document.body.appendChild(a);a.click();a.remove();
+      }
+      if(r.html_b64){
+        var hbin=atob(r.html_b64),hu=new Uint8Array(hbin.length);
+        for(var j=0;j<hbin.length;j++){hu[j]=hbin.charCodeAt(j);}
+        var hblob=new Blob([hu],{type:'text/html;charset=utf-8'});
+        var hurl=URL.createObjectURL(hblob);
+        var ha=document.createElement('a');ha.href=hurl;
+        ha.download='公文轻排版.html';document.body.appendChild(ha);ha.click();ha.remove();
+        try{window.open(hurl,'_blank');}catch(e){}
       }
     }).catch(function(e){showResult({ok:false,text:'请求失败：'+e});});
   };
@@ -355,7 +366,7 @@ def op_clear_map(d: dict) -> dict:
 
 
 def op_lint(d: dict) -> dict:
-    result = gongwen_lint.lint_text(d.get("b", ""), doc_type=d.get("doc_type") or None)
+    result = gongwen_lint.lint_text(d.get("b", ""), doc_type=d.get("doc_type") or None, fingerprint=True)
     return {"ok": True, "text": gongwen_lint.render_text(result)}
 
 
@@ -440,6 +451,24 @@ def op_format(d: dict) -> dict:
         "text": build_docx.render_text(report),
         "note": note,
         "docx": base64.b64encode(buf.getvalue()).decode("ascii"),
+    }
+
+
+def op_format_html(d: dict) -> dict:
+    lines = body_lines(d.get("b", ""))
+    if not any(x.strip() for x in lines):
+        return {"ok": False, "text": "右框没有正文。"}
+    layout = str(d.get("layout") or "").strip() or None
+    try:
+        html_doc, report = build_html.build_html(lines, layout=layout)
+    except ValueError as exc:
+        return {"ok": False, "text": f"HTML 轻排版失败：{exc}"}
+    return {
+        "ok": True,
+        "mode": "html_lite",
+        "text": build_html.render_report(report),
+        "note": f"已生成单文件 HTML 轻排版（{report['layout']}版式），可在新标签页直接打印/存 PDF 或下载离线打开。",
+        "html_b64": base64.b64encode(html_doc.encode("utf-8")).decode("ascii"),
     }
 
 
@@ -539,6 +568,7 @@ OPS = {
     "factdiff": op_factdiff,
     "fonts": op_fonts,
     "format": op_format,
+    "format_html": op_format_html,
     "extract_docx": op_extract_docx,
     "ofd": op_ofd,
     "prompts": op_prompts,

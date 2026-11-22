@@ -1,5 +1,27 @@
 # 更新日志
 
+## 未发布（v1.2.0 升级）
+
+围绕一线用户反馈（“简单通知流程过长、HTML 也能搞定”）与同类高星项目对标（补强综合长文笔力与文风指纹），完成全链路四阶段升级：
+
+### 流程减负与轻快件直通车
+- **轻重分层路由（`skills/gongwen/references/routes.md`、`skills/gongwen/SKILL.md`）**：拆出轻快件（1 站直出）、标准件（机检门控 2 站为主）、重型/高风险件（完整深审流）；将 `gongwen-direct`、`gongwen-humanize` 从新写默认链路中解耦为“外部 AI 稿体检 / 机检超阈值按需触发”。
+- **极简快路径（`skills/gongwen-draft/SKILL.md`）**：1000 字内简单会议/事务/转发通知、简单批复/复函/签报直接用内联速查表一步成稿，减少冗余文件读取与多层目录创建。
+
+### 单文件 GB/T 9704 HTML 轻排版
+- **新增 `skills/gongwen-format/scripts/build_html.py`**：纯 Python 标准库零外联实现，内置 GB/T 9704 A4 `@page` 打印样式、顶部工具条（打印自动隐藏），支持一键打印/存 PDF、复制纯文本（发微信/OA）、复制富文本（粘进 Word/WPS）与白头/红头/材料/便签实时切换。
+- **工具箱接入（`xinchuang/local_toolbox.py`）**：新增「⑦b HTML 轻排版（预览/打印 PDF）」按钮与 `/api/format_html` 接口；新增 `tests/format/test_build_html.py`（6 项单测全通过）。
+
+### 老笔杆子笔力引擎与文风指纹体检
+- **共享笔力资产**：新增 `shared/style/cognitive-stance.md`（开篇站位、归因分寸、敏感问题六种降压写法、案例具名四级梯度、党建与业务七种挂接逻辑）、`shared/style/sentence-clinic.md`（分析/叙事类防句长塌陷 vs 规范类防并列过密、强制词配额替代表、标点去修辞铁律）、`shared/style/exemplars.md`（6 篇多形态虚构节奏范文，只借骨架与句式、严禁借内容），按需同步接入 `report`/`speech`/`party`/`draft`/`brief`/`polish`/`humanize`/`direct`/`soe`/`grassroots`。
+- **标题技法与力度词校准**：升级 `gongwen-title`（业务类 4～8 字短标签 vs 分析类 14～22 字观点双分句、正式篇名禁新媒体修辞钩子、限制评论体喻体进一级标题）；校准 `gongwen-direct` 与 `shared/style/defensive.md`（明确强制词稀缺配额，避免把部署稿改写成满篇“必须/严禁”）。
+- **文风指纹体检（`shared/scripts/gongwen_lint.py --fingerprint`）**：新增 `FGP-001`～`FGP-005`（均句长与长短句比例、强制/要求/建议三档力度词配额并排除引号内与“不得不”、一级段落字数重心分布、千字短信息多一级标题/讲话稿多三级标题的 P1 硬错位检测、半角直引号检查），并同步接入本机工具箱与 `shared/style/baseline.md`；新增 `tests/lint/test_baseline_fingerprint.py`。
+
+### 精简版、盲评包与文档
+- 提纯 `xinchuang/lite/` 对应骨架，在 4000 字硬上限内同步融入轻快件直出与笔力要点。
+- 升级 `docs/评测/人工盲评说明.md`，补充轻快件效率赛道与综合长文笔力专项盲评指引。
+- 重构 `README.md` 首屏定位与“30 秒按轻重选用法”速览。
+
 ## v1.1.0（2026-11-05 发布）
 
 行业包专项修订：五个行业包均升为 Stable（国企包 soe 经补规则、复测后升级），国企包版本升到 1.1.0。

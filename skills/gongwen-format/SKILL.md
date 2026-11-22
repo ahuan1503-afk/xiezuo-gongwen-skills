@@ -1,6 +1,6 @@
 ---
 name: gongwen-format
-description: 按 GB/T 9704-2012 把公文正文排成 Word，有红头、信函、纪要、命令（令）、白头、材料、简报七种版式，支持联合行文版头、附件另面、预印红头纸套打；检查、修复 docx 的页边距、字体、行距、页码；把核稿意见写成 Word 批注；无 Python 时给手动设置清单。用户说“排版”“套红头”“转成 Word”“按国标调格式”“格式乱了帮我改”“页码怎么设”时使用。只管格式不改内容：起草转对应起草 skill，压缩改写转 gongwen-polish，去 AI 味转 gongwen-humanize，去免责对冲转 gongwen-direct，核稿转 gongwen-review。
+description: 按 GB/T 9704-2012 把公文排成 Word（红头、信函、纪要、命令、白头、材料、简报七种版式，支持联合行文、附件另面、套打），或零依赖生成单文件 HTML 轻排版（日常通知浏览器打印/存 PDF 与一键复制）；检查修复 docx；写入核稿批注；无 Python 给手动清单。用户说“排版”“套红头”“转 Word”“生成 HTML 通知”“格式乱了”“页码怎么设”时使用。只管格式不改内容，起草/改稿/核稿转对应 skill。
 license: PolyForm-Noncommercial-1.0.0
 ---
 
@@ -17,11 +17,7 @@ license: PolyForm-Noncommercial-1.0.0
   - 检查已有 docx 是否符合国标，输出 P0/P1/P2 问题清单；轻度问题修复页面、字体字号、行距、缩进、页码，结构问题抽取全文后重排。
   - 把“核稿意见.json”写成 Word 批注；指导用户在 WPS、Word 中手动设置。
   - 行业包起草的专用文书，排版也归本 skill。
-- 不适用：
-  - 起草法定公文转 gongwen-draft，讲话稿转 gongwen-speech，总结、汇报等转 gongwen-report，其他按文种转对应起草 skill；装有行业包时，行业专用文书交对应行业包。只起标题、搭提纲转 gongwen-title。
-  - 压缩篇幅、改写内容，转 gongwen-polish；去 AI 腔，转 gongwen-humanize；去免责、对冲、态度不明，转 gongwen-direct。
-  - 查错别字、提法、标点数字、行文规则等内容问题，转 gongwen-review；本 skill 只把 review 的结论写成批注，不自己核稿。
-  - 用户要求排版时顺便改文字的，说明不改内容，建议先改完再排。
+- 不适用：起草转对应起草 skill（行业专用交行业包）；起标题转 gongwen-title；改内容转 gongwen-polish；去 AI 腔转 gongwen-humanize；去防御腔转 gongwen-direct；核稿转 gongwen-review（本 skill 只写批注，不自己核稿）；排版时不顺便改文字。
 - 转交方式：能调用其他 skill 的环境直接调用；未安装或网页环境的，按 output-format.md 第四部分转交（交接卡、新开对话粘贴说明、安装命令）。
 
 ## 开工检查
@@ -40,7 +36,8 @@ license: PolyForm-Noncommercial-1.0.0
 
 | 用户要什么 | 用哪个脚本 |
 |---|---|
-| 把正文排成 Word、套红头、出信函、纪要或简报 | `scripts/build_docx.py`，随后自动检查 |
+| 把正文排成正式 Word、套红头、出信函、纪要或简报（OA 归档/送签） | `scripts/build_docx.py`，随后自动检查 |
+| 日常通知/急件预览、打印存 PDF、一键复制，或无 `python-docx` | `scripts/build_html.py`（单文件 HTML，白头/红头/材料/便签可切） |
 | 看看这个 docx 格式对不对 | `scripts/check_docx.py` |
 | 这个 docx 格式乱了，帮我改 | 先 `check_docx.py` 判路线（第四步）：轻度问题 `fix_docx.py`，结构问题 `extract_docx.py` 抽取后 `build_docx.py` 重排 |
 | 用户说“内容别动”“一个字都别改”“只调格式” | build、fix 都加 `--keep-text`（第四步第 5 款） |

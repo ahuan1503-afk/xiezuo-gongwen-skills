@@ -20,12 +20,9 @@ license: PolyForm-Noncommercial-1.0.0
   - 判断文种：用户只问“这事用请示还是报告还是函”。
   - 民主生活会、组织生活会召开情况报告：只管报送用的公文格式（标题、主送、结构、结语），内容由 gongwen-party 提供。
 - 不适用（转交）：
-  - 会议纪要、会议记录 → gongwen-minutes（会议通知归本 skill）。
-  - 年度、半年、专项的全面工作报告，总结、计划、汇报材料、自主制定的实施方案 → gongwen-report（报送这些材料的报告、印发它们的通知归本 skill）。
-  - 以上级文件为依据拆任务的实施方案、贯彻落实方案、落实情况报告 → gongwen-implement（只转发、不拆任务的转发通知归本 skill）。
-  - 整改方案、整改台账、整改报告、自查报告 → gongwen-rectify；讲话稿、主持词、致辞 → gongwen-speech；党建材料 → gongwen-party；政务信息、简报 → gongwen-brief。
-  - 只要标题 → gongwen-title；压缩、扩写、调语气 → gongwen-polish；去 AI 腔 → gongwen-humanize；去防御腔 → gongwen-direct；核稿 → gongwen-review；排版 → gongwen-format；说不清要写什么 → gongwen。
-  - 装有行业包的：高校校内事项“学校发还是部门发”的判断、学院和部门给校领导的校内签报（请示报告单）→ gongwen-university；居民通知、告知书、倡议书，乡镇（街道）发村（社区）的防汛防火应急通知 → gongwen-grassroots；要上党委会、董事会、总经理办公会的议题材料，董事会议案和决议 → gongwen-soe（部门向领导的签报归本 skill）；医院上会议题和评审、质量等专用文书 → gongwen-hospital；致家长的一封信 → gongwen-k12。对外的请示、函、通告，以单位名义的正式通知和就一件事的报告仍归本 skill；没装行业包的，上述签报和通知由本 skill 按单位画像和通用写法处理，不拒绝。
+  - 纪要/记录→gongwen-minutes（会议通知归本 skill）；全面工作报告/总结/计划/汇报/自主方案→gongwen-report；依上级文件拆任务方案/落实报告→gongwen-implement；整改/自查→gongwen-rectify；讲话/主持/致辞→gongwen-speech；党建→gongwen-party；信息/简报→gongwen-brief。
+  - 标题→gongwen-title；压缩扩写→gongwen-polish；去 AI 腔→gongwen-humanize；去防御腔→gongwen-direct；核稿→gongwen-review；排版→gongwen-format；总入口→gongwen。
+  - 行业包已装时：高校两级发文判断和校内签报→gongwen-university；居民/告知/倡议/基层防汛应急通知→gongwen-grassroots；国企上会议题/董事会议案决议→gongwen-soe；医院上会议题及专文→gongwen-hospital；致家长信→gongwen-k12。对外请示/函/通告、单位正式通知与就一事报告仍归本 skill；未装行业包由本 skill 按画像处理，不拒绝。
 - 转交方式：能调用其他 skill 的环境直接调用；目标 skill 未安装或在网页环境的，按 `references/_shared/style/output-format.md` 第四部分转交：给交接卡、“新开对话粘贴 dist/prompts/<skill>.md 继续”的说明和安装命令。
 
 ## 开工检查
@@ -41,6 +38,10 @@ license: PolyForm-Noncommercial-1.0.0
 5. 不做的事，说明原因后其余照常：把正式文件改成便笺、“白头”来规避发文数量管理（`references/_shared/rules/jianfu.md` JF-15）；替用户决定批复同意与否、处理决定的轻重；起草党纪处分、政务处分决定。
 6. 定工作模式：用户给的是素材或口头描述的，用新写模式；给的是已有稿子、要改文种或结构的，用模式二。
 7. 定首轮交付（`references/_shared/profiles/roles.md` 第十节）：有题目，并且至少有一项具体事实（时间、主体、做法、数据之一）的，任何模式都首轮直接出稿，缺的且无法从上下文确定的才标【待补】。只有四种情形停下，在回复开头一句话说明属于哪一种：①需要本人经历的材料缺本人事例；②只有题目、没有任何具体事实，出结构说明和补料清单；③用户明确要求先看提纲、要点或一页纸，交一页纸（文种及理由、主送、各部分要点、待补清单）；④材料涉密，按第1条停止，提纲也不出。
+
+## 极简快路径（简单通知 / 批复 / 复函 / 签报）
+
+单件短文（约 1000 字内，如会议/事务/转发通知、简单批复/复函/签报）、事实在对话中给出且无涉密附件/跨部门会签/重大处罚时，红线不变、去冗余流程：① 按本文件内联表直接成稿，免逐个翻读 `references/`；② 纯短文本无敏感信号免外部起 `secret_check.py`，有 Python 可单次跑 `gongwen_lint.py` 确认无 P0；③ 直接交正文 + 1～3 行极简【起草说明】，不强建目录树（需存盘/排版时再建），末尾一句提示可选单文件 HTML 打印/复制或国标 Word。
 
 ## 工作流程
 
@@ -164,7 +165,7 @@ license: PolyForm-Noncommercial-1.0.0
 1. 能写文件的，在当前工作目录建 `公文/<YYYYMMDD>-<简短标题>/`，写入只含正文的 `正文.txt`。拆成几份的写 `正文-报告.txt`、`正文-请示.txt`；模式二另存 `原稿.txt`。同名文件已存在时加 -v2、-v3，不覆盖。对话中报文件位置和一句话概述，并给出起草说明，不写过程说明。
 2. 网页环境：依次输出正文、`【起草说明】`，正文前不加引导语。路线还有下一站的，在起草说明之后输出更新后的交接卡，告诉用户新开对话，先粘贴下一站的提示词文件，再粘贴交接卡和本站产出。
 3. 起草说明只在对话中，不超过 5 行、每行一句：假设（文种判断及条款、采用的默认值）、待补（汇总一行，版头要素列在最后）、待核实（汇总一行）、修改说明、保密提示；教学模式另附写作要点。涉及其他部门职权的必须附“附：需会签部门”，用户列出的全部列入；需要时附“附：提法核对清单”“附：素材台账”。
-4. 在对话中（不在正文里）提示下一步，用描述性说法，不写 skill 名：送签前可以继续让我核稿，再排成国标 Word。
+4. 在对话中（不在正文里）提示下一步，用描述性说法，不写 skill 名：日常通知可直接出单文件 HTML（浏览器打印/存 PDF 或一键复制）；正式送签归档可核稿并排成国标 Word。
 
 ## 模式二　改写已有稿件
 
@@ -239,6 +240,7 @@ license: PolyForm-Noncommercial-1.0.0
 | `references/_shared/guardrails.md` | 开工前；与用户要求冲突时 |
 | `references/_shared/style/output-format.md` | 第五步交付；交接卡；转交和未安装兜底 |
 | `references/_shared/style/ai-tone.md`、`references/_shared/style/defensive.md` | 成稿措辞；处理机检结果 |
+| `references/_shared/style/cognitive-stance.md`、`references/_shared/style/sentence-clinic.md` | 行文站位分寸、规范类防并列过密与强制词配额替代表（复杂部署通知/意见/报告按需读） |
 | `references/_shared/rules/tiaoli.md` | 写条款依据；行文规则原文要点 |
 | `references/_shared/rules/doc-types.md` | 文种通用要点、决策表、易混辨析 |
 | `references/_shared/rules/gbt9704.md`、`references/_shared/rules/gbt15834.md`、`references/_shared/rules/gbt15835.md` | 格式要素、标点、数字 |

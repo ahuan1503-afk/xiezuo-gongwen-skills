@@ -106,7 +106,7 @@ license: PolyForm-Noncommercial-1.0.0
 8. 篇幅按 `references/_shared/guardrails.md` 第四条第 2 款：字数按提纲分配，以目标 ±10% 为准，超了先删铺垫和重复表态。素材不足的，用工作性表述补足常规板块（回顾性文书不补下一步计划），不新增事实，不注水；起草说明一句话说明哪几部分是常规表述；“不超过”“以内”只设上限，不扩写；【待补】不计入字数。
 9. 主语按单位类型：我局、我院、我校、公司、我镇、社区居委会（`references/units.md`）。
 10. 用户提供了上级文件的，逐条转化为本单位的具体措施，不照抄原文；本单位措施缺失的，按上级要求和文种常规写出可执行措施，责任主体只用材料已有的单位、部门（`references/_shared/rules/jianfu.md` JF-04）。
-11. 避开 AI 腔和防御腔（`references/_shared/style/ai-tone.md`、`references/_shared/style/defensive.md`）；“一是……二是……”、四字格、排比式小标题照常使用。
+11. 避开 AI 腔和防御腔（`references/_shared/style/ai-tone.md`、`defensive.md`）；“一是……二是……”、四字格、排比小标题照常用。笔力按需参照 `references/_shared/style/cognitive-stance.md`、`sentence-clinic.md`、`exemplars.md`（只借节奏不借内容）；3000 字以上长文支持按情形③先看骨架。
 12. 引号内的做法名称、本单位提法原样使用；“周五”“下周一”等相对日期和成文日期的写法，按 `references/_shared/guardrails.md` 第二条第 7、8 款。
 
 ### 第五步　自检
@@ -114,7 +114,7 @@ license: PolyForm-Noncommercial-1.0.0
 1. 台账对账（必做）：按 `references/ledger.md` 第七部分，把正文中每个统计数、金额、百分比、次数、人数、名次逐个在台账里找；有 Python 环境时先运行 `python scripts/fact_diff.py 素材台账.md 正文.txt --ledger` 辅助查找。
 2. 机检：有 Python 环境时运行 `python scripts/gongwen_lint.py 正文.txt --doc-type 总结`。`--doc-type` 按实际填：总结、计划、工作要点、汇报材料、调研报告、经验材料、述职报告、实施方案（大会工作报告填总结）。P0 必改，P1 逐条判断，P2 酌情处理；公文白名单写法（`references/_shared/style/ai-tone.md` 第二部分）和【待补】标记照常保留。ELM 要素缺失的，能确定的补写，不能确定的标【待补】；EVD 强评价缺数据的，补用户材料中的数据或改用不带强评价的写法，不得编造数据。
 3. 没有 Python、脚本报错或输出“未执行检查”的，按 `references/checklist.md` 逐项人工检查，在起草说明写“未运行机检，已按人工清单检查”。
-4. 篇幅、层次、开头结语可对照 `references/_shared/style/baseline.md` 中该文种的典型参数（参照，不是硬规则；用户指定篇幅时以用户为准）；机检加 `--baseline` 会对偏离基线的篇幅、一级标题数、“一是”组数、顿号密度给 P2 提示。
+4. 篇幅、层次、开头结语可对照 `references/_shared/style/baseline.md`；机检加 `--baseline` 比语料区间，加 `--fingerprint` 查句长、强制词配额与段落重心（偏离有理由可保留）。
 5. 最后过一遍本文“自检清单”。
 
 ### 第六步　交付
@@ -184,4 +184,5 @@ license: PolyForm-Noncommercial-1.0.0
 | `references/types/` 下 8 个文件 | 搭提纲前读对应类型 |
 | `references/units.md`、`references/checklist.md` | 读完单位画像后；无法运行机检时 |
 | `references/_shared/guardrails.md`、`references/_shared/profiles/roles.md` | 开工前 |
+| `references/_shared/style/cognitive-stance.md`、`sentence-clinic.md`、`exemplars.md` | 站位分寸、句子对照与节奏锚点（只借节奏不借内容） |
 | `references/_shared/` 下其他文件 | 本文引用处 |
